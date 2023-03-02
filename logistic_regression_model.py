@@ -45,7 +45,7 @@ def split_train_val_test(data):
             data (pandas DataFrame): list that contains the explanatory variables and objective variable
             
         Returns:
-            set_used (list): list that contains x_train, x_val, x_test, y_train, y_val, y_test
+            set_used (list): list that contains x_train, x_val, x_test, y_train, y_val, y_test, x_full_train, y_full_train
     """
     
     # Create x variable with the explanatory variables and y variable with the objective variable
@@ -70,10 +70,13 @@ def exploratory_data_analysis(set_used):
     """ This function will make some exploratory data analysis
 
         Args:
-            set_used (list): list that contains x_train, x_val, x_test, y_train, y_val, y_test
+            set_used (list): list that contains x_train, x_val, x_test, y_train, y_val, y_test, x_full_train, y_full_train
 
         Return:
-    
+            global_churn_rate (float): float that represents the overall churn rate 
+            numerical (list) : list of string that indicates which are the numerical variables
+            categorical (list) : list of string that indicates which are the categorical variables
+            unique (series) : contains a count of the number of unique attributes by categorical variable
     """
     # Counts the number of customers that churn and the ones that will keep the service
     print(set_used[7].value_counts())
@@ -90,6 +93,38 @@ def exploratory_data_analysis(set_used):
     unique = set_used[6][categorical].nunique()
 
     return global_churn_rate, numerical, categorical, unique
+
+
+def feature_importance(set_used, categorical, global_churn_rate):
+    """This function creates a dataset that enables to evaluate feature importance
+
+        Args:
+            set_used (list): list that contains x_train, x_val, x_test, y_train, y_val, y_test, x_full_train, y_full_train
+            categorical (list) : list of string that indicates which are the categorical variables
+            global_churn_rate (float): float that represents the overall churn rate 
+
+        Return:
+            full_train : 
+            df_group : 
+    """
+    # Merge x and y full_train datasets
+    full_train = pd.DataFrame(pd.merge(set_used[6], set_used[7], left_index=True,right_index=True))
+    
+    for c in categorical:
+        # Print the name of the variable
+    
+        # Calculates the metrics aggregated by variable
+        df_group = full_train.groupby(c).churn.agg(['mean', 'count'])
+
+        # Compute the differece (difference between the mean within the group and overall mean)
+        df_group['diff'] = df_group['mean'] - global_churn_rate
+
+        # Compute the risk ratio (ratio between the mean within the group and overall mean)
+        df_group['risk'] = df_group['mean']/global_churn_rate
+
+        print(df_group)
+
+    return  full_train, df_group
 
 
 def parse_arguments():
@@ -117,8 +152,13 @@ def main():
     set_used = split_train_val_test(data)
 
     global_churn_rate, numerical, categorical, unique = exploratory_data_analysis(set_used)
+    
+    print(type(global_churn_rate))
+    print(type(numerical))
+    print(type(categorical))
+    print(type(unique))
 
-    print(unique)
+    full_train, df_group = feature_importance(set_used, categorical, global_churn_rate)
 
 if __name__ == '__main__':
     main()
