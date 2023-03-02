@@ -104,8 +104,8 @@ def feature_importance(set_used, categorical, global_churn_rate):
             global_churn_rate (float): float that represents the overall churn rate 
 
         Return:
-            full_train : 
-            df_group : 
+            full_train (pandas DataFrame): dataframe that contains a merge between x_full_train and y_full_train that were both inside list set_used
+            df_group (pandas DataFrame): dataframe that contains some metrics, as mean, coun, diff and risk aggregated by explanatory variable
     """
     # Merge x and y full_train datasets
     full_train = pd.DataFrame(pd.merge(set_used[6], set_used[7], left_index=True,right_index=True))
@@ -152,11 +152,6 @@ def main():
     set_used = split_train_val_test(data)
 
     global_churn_rate, numerical, categorical, unique = exploratory_data_analysis(set_used)
-    
-    print(type(global_churn_rate))
-    print(type(numerical))
-    print(type(categorical))
-    print(type(unique))
 
     full_train, df_group = feature_importance(set_used, categorical, global_churn_rate)
 
