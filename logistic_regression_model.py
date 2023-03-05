@@ -184,7 +184,7 @@ def main():
     mt_info_score, df_mt_info_score = mutual_info_churn_score (full_train, categorical)
 
     # Mutual info score sorted
-    print(df_mt_info_score.sort_values(by = "mutual_info_score"))
+    print(df_mt_info_score.sort_values(by = "mutual_info_score", ascending = False))
 
 if __name__ == '__main__':
     main()
