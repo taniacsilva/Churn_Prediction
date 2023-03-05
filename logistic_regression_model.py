@@ -6,6 +6,7 @@ import argparse
 import sklearn
 
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import mutual_info_score
 
 #Data Preparation
 def data_preparation (file_name):
@@ -42,7 +43,7 @@ def split_train_val_test(data):
     """ This functions splits the dataset between train, validation and test
 
         Args:
-            data (pandas DataFrame): list that contains the explanatory variables and objective variable
+            data (pandas.DataFrame): list that contains the explanatory variables and objective variable
             
         Returns:
             set_used (list): list that contains x_train, x_val, x_test, y_train, y_val, y_test, x_full_train, y_full_train
@@ -104,8 +105,8 @@ def feature_importance(set_used, categorical, global_churn_rate):
             global_churn_rate (float): float that represents the overall churn rate 
 
         Return:
-            full_train (pandas DataFrame): dataframe that contains a merge between x_full_train and y_full_train that were both inside list set_used
-            df_group (pandas DataFrame): dataframe that contains some metrics, as mean, coun, diff and risk aggregated by explanatory variable
+            full_train (pandas.DataFrame): dataframe that contains a merge between x_full_train and y_full_train that were both inside list set_used
+            df_group (pandas.DataFrame): dataframe that contains some metrics, as mean, coun, diff and risk aggregated by explanatory variable
     """
     # Merge x and y full_train datasets
     full_train = pd.DataFrame(pd.merge(set_used[6], set_used[7], left_index=True,right_index=True))
@@ -126,6 +127,20 @@ def feature_importance(set_used, categorical, global_churn_rate):
 
     return  full_train, df_group
 
+def mutual_info(full_train):
+    """This function calculates the mutual info score that measure the mutual dependence between two variables.
+
+        Args:
+            full_train (pandas.DataFrame): dataframe that contains a merge between x_full_train and y_full_train that were both inside list set_used
+
+        Return:
+            mutual_info_score
+   
+   """
+    mt_info_scr_contract = mutual_info_score(full_train.churn, full_train.contract)
+    mt_info_scr_gender = mutual_info_score(full_train.churn, full_train.gender)
+    return mt_info_scr_contract, mt_info_scr_gender
+
 
 def parse_arguments():
     """This function parses the argument(s) of this model
@@ -144,8 +159,7 @@ def parse_arguments():
 
 
 def main():
-    """This is the main function of this Linear Model Regression Implementation model
-    """
+    """This is the main function of this Linear Model Regression Implementation model"""
     args = parse_arguments()
     
     data, string_col = data_preparation(args.file_name)
@@ -155,5 +169,11 @@ def main():
 
     full_train, df_group = feature_importance(set_used, categorical, global_churn_rate)
 
+    mt_info_scr_contract, mt_info_scr_gender = mutual_info(full_train)
+
+    print("Mutual Info Score Contract : ",mt_info_scr_contract)
+    print("Mutual Info Score Gender : ",mt_info_scr_gender)
+
+    
 if __name__ == '__main__':
     main()
