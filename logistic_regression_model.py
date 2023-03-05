@@ -127,7 +127,8 @@ def feature_importance(set_used, categorical, global_churn_rate):
 
     return  full_train, df_group
 
-def mutual_info(full_train):
+
+def mutual_info_churn_score(full_train, categorical):
     """This function calculates the mutual info score that measure the mutual dependence between two variables.
 
         Args:
@@ -137,9 +138,20 @@ def mutual_info(full_train):
             mutual_info_score
    
    """
-    mt_info_scr_contract = mutual_info_score(full_train.churn, full_train.contract)
-    mt_info_scr_gender = mutual_info_score(full_train.churn, full_train.gender)
-    return mt_info_scr_contract, mt_info_scr_gender
+    mt_info_score = []
+    
+    for c in categorical:
+        a = mutual_info_score(full_train[c], full_train.churn)
+        mt_info_score.append(a)
+        df_mt_info_score = pd.DataFrame(mt_info_score, columns = ["mutual_info_score"])
+
+    # Add one column to display also the variable to which the mutual_info_score corresponds
+    df_mt_info_score['variable'] = categorical
+
+    # Change the columns order 
+    df_mt_info_score = df_mt_info_score.iloc[:, [1,0]]
+
+    return mt_info_score, df_mt_info_score
 
 
 def parse_arguments():
@@ -169,11 +181,10 @@ def main():
 
     full_train, df_group = feature_importance(set_used, categorical, global_churn_rate)
 
-    mt_info_scr_contract, mt_info_scr_gender = mutual_info(full_train)
+    mt_info_score, df_mt_info_score = mutual_info_churn_score (full_train, categorical)
 
-    print("Mutual Info Score Contract : ",mt_info_scr_contract)
-    print("Mutual Info Score Gender : ",mt_info_scr_gender)
+    # Mutual info score sorted
+    print(df_mt_info_score.sort_values(by = "mutual_info_score"))
 
-    
 if __name__ == '__main__':
     main()
