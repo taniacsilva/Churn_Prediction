@@ -132,12 +132,13 @@ def mutual_info_churn_score(full_train, categorical):
     """This function calculates the mutual info score that measure the mutual dependence between two variables.
 
         Args:
-            full_train (pandas.DataFrame): dataframe that contains a merge between x_full_train and y_full_train that were both inside list set_used
-
+            full_train (pandas.DataFrame) : dataframe that contains a merge between x_full_train and y_full_train that were both inside list set_used
+            categorical (list) : list of string that indicates which are the categorical variables
+        
         Return:
-            mutual_info_score
-   
-   """
+            df_mt_info_score (pandas.DataFrame) : dataframe that contains the mutusl info score by explanatory variable (categorical)
+    """
+
     mt_info_score = []
     
     for c in categorical:
@@ -151,9 +152,9 @@ def mutual_info_churn_score(full_train, categorical):
     # Change the columns order 
     df_mt_info_score = df_mt_info_score.iloc[:, [1,0]]
 
-    return mt_info_score, df_mt_info_score
+    return df_mt_info_score
 
-
+    
 def parse_arguments():
     """This function parses the argument(s) of this model
 
@@ -181,10 +182,34 @@ def main():
 
     full_train, df_group = feature_importance(set_used, categorical, global_churn_rate)
 
-    mt_info_score, df_mt_info_score = mutual_info_churn_score (full_train, categorical)
+    df_mt_info_score = mutual_info_churn_score (full_train, categorical)
 
     # Mutual info score sorted
     print(df_mt_info_score.sort_values(by = "mutual_info_score", ascending = False))
+
+    # Correlation between numerical variables and churn
+    print(full_train[numerical].corrwith(full_train.churn))
+
+    # Correlation analysis between tenure variable and churn
+    print(
+        "Correlation analysis between Tenure Variable and Churn \nTenure <= 2: ",
+        full_train[full_train.tenure <= 2].churn.mean(),
+        " \n2 < Tenure <= 12: ",
+        full_train[(full_train.tenure > 2) & (full_train.tenure <= 12)].churn.mean(),
+        " \nTenure >= 12: ",
+        full_train[full_train.tenure >= 2].churn.mean(),
+        )
+    
+    # Correlation analysis between monthly charges and churn
+    print(
+        "Correlation analysis between monthly charges and churn \nMonthly Charges <= 20: ",
+        full_train[full_train.monthlycharges <= 20].churn.mean(),
+        " \n20 < Monthly Charges <= 50: ",
+        full_train[(full_train.monthlycharges > 20) & (full_train.monthlycharges <= 50)].churn.mean(),
+        " \nMonthly Charges >= 50: ",
+        full_train[full_train.monthlycharges >= 2].churn.mean(),
+        )
+    
 
 if __name__ == '__main__':
     main()
