@@ -7,6 +7,7 @@ import sklearn
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mutual_info_score
+from sklearn.feature_extraction import DictVectorizer
 
 #Data Preparation
 def data_preparation (file_name):
@@ -154,7 +155,22 @@ def mutual_info_churn_score(full_train, categorical):
 
     return df_mt_info_score
 
+
+def one_hot_enconding(set_used, categorical, numerical):
     
+    # For train dataset
+    train_dicts = set_used[0][categorical + numerical].to_dict(orient="records")
+    dv = DictVectorizer(sparse=False)
+    X_train = dv.fit_transform(train_dicts)
+
+    # For validation dataset
+    val_dicts = set_used[1][categorical + numerical].to_dict(orient="records")
+    X_val = dv.transform(val_dicts) # Validation datased is not fitted because it was already fitted for train dataset
+
+
+    return X_train, X_val
+
+
 def parse_arguments():
     """This function parses the argument(s) of this model
 
@@ -210,6 +226,8 @@ def main():
         full_train[full_train.monthlycharges >= 2].churn.mean(),
         )
     
+    X_train, X_val = one_hot_enconding (set_used, categorical, numerical)
+
 
 if __name__ == '__main__':
     main()
