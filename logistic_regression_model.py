@@ -157,11 +157,12 @@ def mutual_info_churn_score(full_train, categorical):
     return df_mt_info_score
 
 
-def one_hot_enconding(set_used, categorical, numerical):
+def one_hot_enconding(set_used_x, set_used_y, categorical, numerical):
     """This function performs one hot encoding to categorical variables
 
     Args:
-        set_used (list) : list that contains x_train, x_val, x_test, y_train, y_val, y_test, x_full_train, y_full_train
+        set_used_x (list) : list with explanatory variables
+        set_used_y (list) : list with objective variable
         categorical (list) : list of string that indicates which are the categorical variables
         numerical (list) : list of string that indicates which are the numerical variables
 
@@ -171,12 +172,12 @@ def one_hot_enconding(set_used, categorical, numerical):
         dv (sklearn.feature_extraction._dict_vectorizer.DictVectorizer) : method for one hot encoding
     """
     # For train dataset
-    train_dicts = set_used[0][categorical + numerical].to_dict(orient="records")
+    train_dicts = set_used_x[categorical + numerical].to_dict(orient="records")
     dv = DictVectorizer(sparse=False)
     X_train = dv.fit_transform(train_dicts)
 
     # For validation dataset
-    val_dicts = set_used[1][categorical + numerical].to_dict(orient="records")
+    val_dicts = set_used_y[categorical + numerical].to_dict(orient="records")
     X_val = dv.transform(val_dicts) # Validation datased is not fitted because it was already fitted for train dataset
 
     return X_train, X_val, dv
@@ -196,7 +197,7 @@ def logst_regr_model (X_train, X_val, set_used):
                                             has a probability to churn higher than 0.5 and, otherwise False
     """    
     model = LogisticRegression()
-    model.fit(X_train, set_used[3])
+    model.fit(X_train, set_used)
 
     #Predict (Hard Predictions - Train Dataset)
     model.predict(X_train)
@@ -265,9 +266,11 @@ def main():
         full_train[full_train.monthlycharges >= 2].churn.mean(),
         )
     
-    X_train, X_val, dv = one_hot_enconding (set_used, categorical, numerical)
 
-    model, churn_decision = logst_regr_model(X_train, X_val, set_used)
+    ## Training the model (Train and Validation Set)
+    X_train, X_val, dv = one_hot_enconding (set_used[0],set_used[1], categorical, numerical)
+
+    model, churn_decision = logst_regr_model(X_train, X_val, set_used[3])
 
     
     # Returns the Weight/ Coefficients of the logistic regression model
@@ -282,6 +285,15 @@ def main():
     # Model Interpretation
     print(dict(zip(dv.get_feature_names_out(),model.coef_[0].round(3))))
     
-    print(dv)
+
+    ## Using the model (Full Train and Test Set)
+    
+    X_full_train, X_test, dv = one_hot_enconding (set_used[6],set_used[2], categorical, numerical)
+
+    model, churn_decision = logst_regr_model(X_full_train, X_test, set_used[7])
+
+    # Returns the accuracy computed using as basis validation dataset
+    print("Accuracy: ",(set_used[5] == churn_decision).mean())
+
 if __name__ == '__main__':
     main()
