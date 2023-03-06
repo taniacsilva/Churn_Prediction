@@ -295,5 +295,6 @@ def main():
     # Returns the accuracy computed using as basis validation dataset
     print("Accuracy: ",(set_used[5] == churn_decision).mean())
 
+
 if __name__ == '__main__':
     main()
