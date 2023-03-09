@@ -16,16 +16,16 @@ I have followed the following steps:
 
 * 👀 Prepare data
 
-Main Conclusions : This step included data obtention and some procedures of data preparation, namely look at the data, make columns names and values look uniform, check if all the columns read correctly and check if the churn variable needs any preparation.
+**Main Conclusions** : This step included data obtention and some procedures of data preparation, namely look at the data, make columns names and values look uniform, check if all the columns read correctly and check if the churn variable needs any preparation.
 
 * 🐱‍👤 Setting up the validation framework (split between train, validation and test)
 
-Main Conclusions : For each partition, feature matrices (X) and y vectors of targets were obtained. I have calculated the size of partitions and records are shuffled to guarantee that values of the three partitions contain non-sequential records of the dataset, and the partitions are created with the shuffled indices.
+**Main Conclusions** : For each partition, feature matrices (X) and y vectors of targets were obtained. I have calculated the size of partitions and records are shuffled to guarantee that values of the three partitions contain non-sequential records of the dataset, and the partitions are created with the shuffled indices.
 
 * 🌲 Exploratory Data Analysis (EDA)
 
 
-Main Conclusions : Included checking missing values, look at the target variable (churn) and look at numerical and categorical variables. I have also performed feature importance analysis (as part of Exploratory Data Analysis) to identify which features affect the target variable:
+**Main Conclusions** : Included checking missing values, look at the target variable (churn) and look at numerical and categorical variables. I have also performed feature importance analysis (as part of Exploratory Data Analysis) to identify which features affect the target variable:
 
 
 * **Churn Rate** - Difference between mean of the target variable and mean of categories for a feature. If this difference is greater than 0, it means that the category is less likely to churn, and if the difference is lower than 0, the group is more likely to churn. The larger differences are indicators that a variable is more important than others.
@@ -43,31 +43,32 @@ Main Conclusions : Included checking missing values, look at the target variable
         - LOW when r is between [0, -0.2[ or [0, 0.2[
         - MEDIUM when r is between [-0.2, -0.5[ or [2, 0.5[
         - STRONG when r is between [-0.5, -1.0] or [0.5, 1.0]
+
         Where, r is correlation coefficient
 
 
 * 0️⃣1️⃣ One-hot Encoding
 
-Main Conclusions : I have used Scikit Learn - Dictionary Vectorizer - to encode categorical features.
+**Main Conclusions** : I have used Scikit Learn - Dictionary Vectorizer - to encode categorical features.
 
 * 👩‍💻 Use Logistic Regression to identify customers that are likely to churn
 
- Main Conclusions : Binary Classification. Logistic Regression is very similar to linear regression except that adds a sigmoid before computing the output.
+**Main Conclusions** : Binary Classification. Logistic Regression is very similar to linear regression except that adds a sigmoid before computing the output.
 
- Sigmoid = $1\frac{1}{(1+e^-z)}$ 
+Sigmoid = $1\frac{1}{(1+e^-z)}$ 
 
 Then, I have trained the model using Scikit Learn and applied it to the validation dataset.
 
 * ✔ Evaluating the model with Accuracy
 
- Main Conclusions : I have calculated the accuracy $\frac{TP + TN}{TP + TN + FP + FN}$
+ **Main Conclusions** : I have calculated the accuracy $\frac{TP + TN}{TP + TN + FP + FN}$
 
 * 🔎 Model Interpretation
 
-Main Conclusions : Interpret the coefficients obtained for the logistic regression model.
+**Main Conclusions** : Interpret the coefficients obtained for the logistic regression model.
 
 * 🎆 Using the model
 
-Main Conclusions: After finding the best model, it was trained with training and validation partitions (x_full_train) and the final accuracy was calculated on the test partition.
+**Main Conclusions**: After finding the best model, it was trained with training and validation partitions (x_full_train) and the final accuracy was calculated on the test partition.
 
 
