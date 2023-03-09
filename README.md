@@ -12,7 +12,7 @@ Where, $y_i$ is the model's prediction and belongs to {0,1}, being 0 the negativ
 
 With this project, I aim to build a model with historical data from customers and assign a score of the likelihood of churning.
 
-I have followed the following steps:
+I have followed the steps described:
 
 * 👀 Prepare data
 
@@ -21,7 +21,7 @@ I have followed the following steps:
 
 * 🐱‍👤 Setting up the validation framework (split between train, validation and test)
 
-**Main Conclusions** : For each partition, feature matrices (X) and y vectors of targets were obtained. I have calculated the size of partitions and records are shuffled to guarantee that values of the three partitions contain non-sequential records of the dataset, and the partitions are created with the shuffled indices.
+**Main Conclusions** : I have splitted the dataset using Scikit-Learn into train, validation and test.
 
 
 * 🌲 Exploratory Data Analysis (EDA)
@@ -30,9 +30,9 @@ I have followed the following steps:
 
 * *Churn Rate* - Difference between mean of the target variable and mean of categories for a feature. If this difference is greater than 0, it means that the category is less likely to churn, and if the difference is lower than 0, the group is more likely to churn. The larger differences are indicators that a variable is more important than others.
 
-* *Risk Ratio* - Ratio that evidence how likely customers within this group are to churn compared to the overall population.Ratio between mean of categories for a feature and mean of the target variable. If this ratio is greater than 1, the category is more likely to churn, and if the ratio is lower than 1, the category is less likely to churn. It expresses the feature importance in relative terms.
+* *Risk Ratio* - Ratio that evidences how likely customers within this group are to churn compared to the overall population .Ratio between mean of categories for a feature and mean of the target variable. If this ratio is greater than 1, the category is more likely to churn, and if the ratio is lower than 1, the category is less likely to churn. It expresses the feature importance in relative terms.
 
-* *Mutual Information* - Categorical Variables - How much can be learned about churn if the value of another is known - Gives information about the relative importance of the variables
+* *Mutual Information* - Categorical Variables - How much can be learned about churn if the value of another variable is known - Gives information about the relative importance of the variables
 
 * *Correlation* - Numerical Variables - Measures the importance of numerical variables.
     - Positive Correlation vs. Negative Correlation: 
@@ -56,7 +56,7 @@ I have followed the following steps:
 
 **Main Conclusions** : Binary Classification. Logistic regression is similar to linear regression because both models take into account the bias term and weighted sum of features. The difference between these models is that the output of linear regression is a real number, while logistic regression outputs a value between zero and one, applying the sigmoid function to the linear regression formula.
 
-$g(x_i)=Sigmoid(w_0+w_1\times(x_1)+w_2\times(x_2)+...+w_n\times(x_n))$ 
+$$g(x_i)=Sigmoid(w_0+w_1\times(x_1)+w_2\times(x_2)+...+w_n\times(x_n))$$ 
 
 $$Sigmoid = \frac{1}{(1+e^-z)}$$ 
 
