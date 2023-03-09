@@ -26,16 +26,18 @@ Main Conclusions : For each partition, feature matrices (X) and y vectors of tar
 
 Main Conclusions : Included checking missing values, look at the target variable (churn) and look at numerical and categorical variables. I have also performed feature importance analysis (as part of Exploratory Data Analysis) to identify which features affect the target variable
 
-    **Churn Rate** - Difference between mean of the target variable and mean of categories for a feature. If this difference is greater than 0, it means that the category is less likely to churn, and if the difference is lower than 0, the group is more likely to churn. The larger differences are indicators that a variable is more important than others.
+   **Churn Rate** - Difference between mean of the target variable and mean of categories for a feature. If this difference is greater than 0, it means that the category is less likely to churn, and if the difference is lower than 0, the group is more likely to churn. The larger differences are indicators that a variable is more important than others.
 
-    **Risk Ratio** - Ratio that evidence how likely customers within this group are to churn compared to the overall population.Ratio between mean of categories for a feature and mean of the target variable. If this ratio is greater than 1, the category is more likely to churn, and if the ratio is lower than 1, the category is less likely to churn. It expresses the feature importance in relative terms.
+   **Risk Ratio** - Ratio that evidence how likely customers within this group are to churn compared to the overall population.Ratio between mean of categories for a feature and mean of the target variable. If this ratio is greater than 1, the category is more likely to churn, and if the ratio is lower than 1, the category is less likely to churn. It expresses the feature importance in relative terms.
 
-    **Mutual Information** - Categorical Variables - How much can be learned about churn if the value of another is known - Gives information about the relative importance of the variables
+   **Mutual Information** - Categorical Variables - How much can be learned about churn if the value of another is known - Gives information about the relative importance of the variables
 
-    **Correlation** - Numerical Variables - Measures the importance of numerical variables. 
+   **Correlation** - Numerical Variables - Measures the importance of numerical variables. 
 
 When r is positive, an increase in x will increase y.
+
 When r is negative, an increase in x will decrease y.
+
 When r is 0, a change in x does not affect y.
 
 Depending on its size, the dependency between both variables could be low, moderate, or strong:
