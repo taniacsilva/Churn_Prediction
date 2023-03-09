@@ -56,7 +56,7 @@ I have followed the following steps:
 
 **Main Conclusions** : Binary Classification. Logistic regression is similar to linear regression because both models take into account the bias term and weighted sum of features. The difference between these models is that the output of linear regression is a real number, while logistic regression outputs a value between zero and one, applying the sigmoid function to the linear regression formula.
 
-$g(x_{i})=Sigmoid(w_0+w_1*x_1+w_2*x_2+w_n*x_n)$
+$g(x_i)=Sigmoid(w_0)$+w_1*x_1+w_2*x_2+w_n*x_n
 
 $$Sigmoid = \frac{1}{(1+e^-z)}$$ 
 
