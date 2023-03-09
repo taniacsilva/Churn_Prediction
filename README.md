@@ -34,4 +34,20 @@ Main Conclusions : I have used Scikit Learn - Dictionary Vectorizer - to encode 
 
  Main Conclusions : Binary Classification. Logistic Regression is very similar to linear regression except that adds a sigmoid before computing the output.
 
- Sigmoid = 
+ Sigmoid = $1\frac{1}{(1+e^(-z)}$ 
+
+Then, I have trained the model using Scikit Learn and applied it to the validation dataset.
+
+* ✔ Evaluating the model with Accuracy
+
+ Main Conclusions : I have calculated the accuracy $\frac{TP + TN}{TP + TN + FP + FN}$
+
+* 🔎 Model Interpretation
+
+Main Conclusions : Interpret the coefficients obtained for the logistic regression model.
+
+* 🎆 Using the model
+
+Main Conclusions: After finding the best model, it was trained with training and validation partitions (x_full_train) and the final accuracy was calculated on the test partition.
+
+
