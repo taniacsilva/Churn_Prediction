@@ -18,13 +18,10 @@ Main Conclusions : For each partition, feature matrices (X) and y vectors of tar
 
 Main Conclusions : Included checking missing values, look at the target variable (churn) and look at numerical and categorical variables. I have also performed feature importance analysis (as part of Exploratory Data Analysis) to identify which features affect our target variable
 
-                    - Churn Rate - How likely customers within this group are to churn compared to the overall population (Difference)
-
-                    - Risk Ratio - How likely customers within this group are to churn compared to the overall population (Ratio)
-
-                    - Mutual Information - Categorical Varaibles - How much can be learned about one variable if the value of another is known - Gives information about the relative importance of the variables
-
-                    - Correlation - Numerical Variables - Measures the importance of numerical variables. Positive Correlation means that if a variable increases, the churn rate increases as well.
+- Churn Rate - How likely customers within this group are to churn compared to the overall population (Difference)
+- Risk Ratio - How likely customers within this group are to churn compared to the overall population (Ratio)
+- Mutual Information - Categorical Varaibles - How much can be learned about one variable if the value of another is known - Gives information about the relative importance of the variables
+- Correlation - Numerical Variables - Measures the importance of numerical variables. Positive Correlation means that if a variable increases, the churn rate increases as well.
 
 * 0️⃣1️⃣ One-hot Encoding
 
@@ -34,7 +31,7 @@ Main Conclusions : I have used Scikit Learn - Dictionary Vectorizer - to encode 
 
  Main Conclusions : Binary Classification. Logistic Regression is very similar to linear regression except that adds a sigmoid before computing the output.
 
- Sigmoid = $1\frac{1}{(1+e^(-z)}$ 
+ Sigmoid = $1\frac{1}{(1+e^-z)}$ 
 
 Then, I have trained the model using Scikit Learn and applied it to the validation dataset.
 
