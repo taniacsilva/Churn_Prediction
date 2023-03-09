@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mutual_info_score
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
 
 #Data Preparation
 def data_preparation (file_name):
@@ -211,6 +212,32 @@ def logst_regr_model (X_train, X_val, set_used):
     return model, churn_decision
 
 
+def evaluation_measure (model, X_val, set_used):
+    """ This function intends to evaluate the model, using different metrics.
+        
+        Args:
+            X_val (Numpy Array) : Array that contains the explanatory variables one hot encoded for validation dataset
+            model (sklearn.linear_model._logistic.LogisticRegression) : Logistic regression model trained
+            set_used (list) : list that contains x_train, x_val, x_test, y_train, y_val, y_test, x_full_train, y_full_train
+
+
+    """
+    y_pred = model.predict_proba(X_val)[:,1]
+
+    #Accuracy - As there is classe inbalance in the data, accuracy is not a good metric for evaluating the model
+    
+    thresholds = np.linspace(0, 1, 21)
+
+    scores = []
+
+    for t in thresholds:
+        score = accuracy_score(set_used[4], y_pred >= t)
+        print('%.2f %.3f' % (t, score))
+        scores.append(score)
+
+    return score
+
+
 def parse_arguments():
     """This function parses the argument(s) of this model
 
@@ -295,6 +322,10 @@ def main():
     # Returns the accuracy computed using as basis validation dataset
     print("Accuracy: ",(set_used[5] == churn_decision).mean())
 
+
+    # Evaluating the model
+    score = evaluation_measure (model, X_val, set_used)
+    print(score)
 
 if __name__ == '__main__':
     main()
