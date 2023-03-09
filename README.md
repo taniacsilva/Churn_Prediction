@@ -17,9 +17,14 @@ Main Conclusions : For each partition, feature matrices (X) and y vectors of tar
 * 🌲 Exploratory Data Analysis (EDA)
 
 Main Conclusions : Included checking missing values, look at the target variable (churn) and look at numerical and categorical variables. I have also performed feature importance analysis (as part of Exploratory Data Analysis) to identify which features affect our target variable
+
                     - Churn Rate
-                    - Risk Ratio
-                    - Mutual Information
 
+                    - Risk Ratio - How likely customers within this group are to churn compared to the overall population
 
-                    (to be continued)
+                    - Mutual Information - Categorical Varaibles - How much can be learned about one variable if the value of another is known - Gives information about the relative importance of the variables
+
+                    - Correlation - Numerical Variables - Measures the importance of numerical variables. Positive Correlation means that if a variable increases, the churn rate increases as well.
+
+* 0️⃣1️⃣ One-hot Encoding
+Main Conclusions : I have used Scikit Learn - Dictionary Vectorizer - to encode categorical features.
