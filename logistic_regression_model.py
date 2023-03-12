@@ -252,7 +252,13 @@ def evaluation_measure (model, X_val, set_used):
         [tn, fp],
         [fn, fp]
         ])
-    return score, confusion_matrix
+    
+    # Precision
+    precision = tp / (tp + fp)
+
+    recall = tp / (tp + fn)
+
+    return score, confusion_matrix, precision, recall
 
 
 def parse_arguments():
@@ -341,14 +347,19 @@ def main():
 
 
     # Evaluating the model
-    score,confusion_matrix = evaluation_measure (model, X_val, set_used)
+    score,confusion_matrix, precision, recall = evaluation_measure (model, X_val, set_used)
     
     # Accuracy 
     
     # Confusion matrix
     print(confusion_matrix)
     print((confusion_matrix/confusion_matrix.sum()).round(2))
-    
+
+    # Precision
+    print(precision)
+
+    # Recall
+    print(recall)
 
 
 
