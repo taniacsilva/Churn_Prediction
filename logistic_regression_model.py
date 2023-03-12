@@ -240,9 +240,19 @@ def evaluation_measure (model, X_val, set_used):
 
     t=0.5
     predict_positive = (y_pred >= t)
-    predict_negative = (y_pred <= t)
+    predict_negative = (y_pred < t)
 
-    return score, actual_positive, actual_negative, predict_positive, predict_negative
+    # & prints an array where the value is true only if both are true
+    tp = (predict_positive & actual_positive).sum() # true positive
+    tn = (predict_negative & actual_negative).sum() # true negative
+    fp = (predict_positive & actual_negative).sum() # false positive
+    fn = (predict_negative & actual_positive).sum() # false negative
+
+    confusion_matrix = np.array([
+        [tn, fp],
+        [fn, fp]
+        ])
+    return score, confusion_matrix
 
 
 def parse_arguments():
@@ -331,10 +341,16 @@ def main():
 
 
     # Evaluating the model
-    score,actual_positive, actual_negative, predict_positive, predict_negative = evaluation_measure (model, X_val, set_used)
-    # prints an array where the value is true only if both are true
-    print((predict_positive & actual_positive).sum())
-    print((predict_negative & actual_negative).sum()) 
+    score,confusion_matrix = evaluation_measure (model, X_val, set_used)
+    
+    # Accuracy 
+    
+    # Confusion matrix
+    print(confusion_matrix)
+    print((confusion_matrix/confusion_matrix.sum()).round(2))
+    
+
+
 
 
 
