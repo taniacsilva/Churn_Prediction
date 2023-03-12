@@ -212,7 +212,7 @@ def logst_regr_model (X_train, X_val, set_used):
     return model, churn_decision
 
 
-def evaluation_measure (model, X_val, set_used):
+def evaluation_measure (y_pred, set_used):
     """ This function intends to evaluate the model, using different metrics.
         
         Args:
@@ -222,7 +222,6 @@ def evaluation_measure (model, X_val, set_used):
 
 
     """
-    y_pred = model.predict_proba(X_val)[:,1]
 
     # Accuracy - As there is classe inbalance in the data, accuracy is not a good metric for evaluating the model
     thresholds = np.linspace(0, 1, 21)
@@ -230,13 +229,13 @@ def evaluation_measure (model, X_val, set_used):
     scores = []
 
     for t in thresholds:
-        score = accuracy_score(set_used[4], y_pred >= t)
+        score = accuracy_score(set_used, y_pred >= t)
         print('%.2f %.3f' % (t, score))
         scores.append(score)
 
     # Confusion matrix (This is a different way to evaluate my model which is not affected by inbalance)
-    actual_positive = (set_used[4] == 1)
-    actual_negative = (set_used[4] == 0)
+    actual_positive = (set_used == 1)
+    actual_negative = (set_used == 0)
 
     t=0.5
     predict_positive = (y_pred >= t)
@@ -258,8 +257,40 @@ def evaluation_measure (model, X_val, set_used):
 
     recall = tp / (tp + fn)
 
-    return score, confusion_matrix, precision, recall
+    # ROC Curves
+    
+    tpr = tp / (tp + fn)
+    fpr = fp / (tn + fp)
 
+    return score, confusion_matrix, precision, recall, tpr, fpr
+
+
+def ROC_Curves (y_pred, set_used):
+
+    thresholds = np.linspace(0, 1, 101)
+
+    scores = []
+
+    for t in thresholds:
+        actual_positive = (set_used == 1)
+        actual_negative = (set_used == 0)
+        predict_positive = (y_pred >= t)
+        predict_negative = (y_pred < t)
+
+        tp = (predict_positive & actual_positive).sum()
+        fp = (predict_positive & actual_negative).sum()
+        tn = (predict_negative & actual_negative).sum()
+        fn = (predict_negative & actual_positive).sum()
+
+        scores.append((t, tp, fp, fn, tn))
+
+        columns = ['threshold', 'tp', 'fp', 'fn', 'tn']
+        df_scores = pd.DataFrame(scores, columns=columns)
+
+        df_scores['tpr'] = df_scores.tp / (df_scores.tp + df_scores.fn)
+        df_scores['fpr'] = df_scores.fp / (df_scores.tn + df_scores.fp)
+
+    return df_scores
 
 def parse_arguments():
     """This function parses the argument(s) of this model
@@ -347,7 +378,9 @@ def main():
 
 
     # Evaluating the model
-    score,confusion_matrix, precision, recall = evaluation_measure (model, X_val, set_used)
+    y_pred = model.predict_proba(X_val)[:,1]
+
+    score,confusion_matrix, precision, recall, tpr, fpr = evaluation_measure (y_pred, set_used[4])
     
     # Accuracy 
     
@@ -361,9 +394,46 @@ def main():
     # Recall
     print(recall)
 
+    # ROC Curves
+    df_scores = ROC_Curves(y_pred, set_used[4])
+    print(df_scores[::10])
+
+    # Random Model
+    np.random.seed(1)
+    y_rand = np.random.uniform (0, 1, size=len(set_used[4]))
+
+    df_rand = ROC_Curves(y_rand, set_used[4])
+    print(df_rand[::10])
 
 
+    # Ideal Model
 
+    num_neg = (set_used[4] == 0).sum()
+    num_pos = (set_used[4] == 1).sum()
+    y_ideal = np.repeat ([0, 1], [num_neg, num_pos])
+    y_ideal_pred = np.linspace (0, 1, len(set_used[4]))
+    print(1-set_used[4].mean())
+    print(((y_ideal_pred >= 0.726) == y_ideal).mean()) # accuracy
+    df_ideal = ROC_Curves(y_ideal_pred, y_ideal)
+    
+    plt.plot(df_scores.threshold, df_scores['tpr'], label ='TPR')
+    plt.plot(df_scores.threshold, df_scores['fpr'], label ='FPR')
+    plt.plot(df_rand.threshold, df_rand['tpr'], label ='TPR')
+    plt.plot(df_rand.threshold, df_rand['fpr'], label ='FPR')
+    plt.plot(df_ideal.threshold, df_ideal['tpr'], label ='TPR', color = 'black')
+    plt.plot(df_ideal.threshold, df_ideal['fpr'], label ='FPR', color = 'black')
+    plt.legend()
+    plt.show()
+
+    plt.figure(figsize=(5,5))
+    plt.plot(df_scores.fpr, df_scores.tpr, label = 'model')
+    #plt.plot(df_rand.fpr, df_rand.tpr, label = 'random')
+    plt.plot([0, 1], [0, 1], label = 'random')
+    plt.plot(df_ideal.fpr, df_ideal.tpr, label = 'ideal')
+    plt.xlabel('FPR')
+    plt.ylabel('TPR')
+    plt.legend()
+    plt.show()
 
 if __name__ == '__main__':
     main()
