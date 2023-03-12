@@ -4,12 +4,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import argparse
 import sklearn
+import random
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mutual_info_score
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import roc_curve
+from sklearn.metrics import auc
+from sklearn.metrics import roc_auc_score
 
 #Data Preparation
 def data_preparation (file_name):
@@ -290,7 +294,32 @@ def ROC_Curves (y_pred, set_used):
         df_scores['tpr'] = df_scores.tp / (df_scores.tp + df_scores.fn)
         df_scores['fpr'] = df_scores.fp / (df_scores.tn + df_scores.fp)
 
-    return df_scores
+        # AUC
+
+        neg = y_pred[set_used == 0]
+        pos = y_pred[set_used == 1]
+       
+        success = 0
+        n = 10000
+        for i in range (n):
+            pos_ind = random.randint(0, len(pos) - 1)
+            neg_ind = random.randint(0, len(neg) - 1)
+
+            if pos[pos_ind] > neg[neg_ind]:
+                success = success + 1
+        n = 50000
+        
+        
+        """
+        # Alternative - using numpy
+
+        np.random.seed(1)
+        pos_ind = np.random.randint (0, len(pos), size=n)
+        neg_ind = np.random.randint (0, len(neg), size=n)
+        print((pos[pos_ind] > neg[neg_ind]).mean()) # to include in main function 
+        """
+
+    return df_scores, success, n
 
 def parse_arguments():
     """This function parses the argument(s) of this model
@@ -394,15 +423,15 @@ def main():
     # Recall
     print(recall)
 
-    # ROC Curves
-    df_scores = ROC_Curves(y_pred, set_used[4])
+    ## ROC Curves
+    df_scores, success, n = ROC_Curves(y_pred, set_used[4])
     print(df_scores[::10])
 
     # Random Model
     np.random.seed(1)
     y_rand = np.random.uniform (0, 1, size=len(set_used[4]))
 
-    df_rand = ROC_Curves(y_rand, set_used[4])
+    df_rand, success_rand, n_rand = ROC_Curves(y_rand, set_used[4])
     print(df_rand[::10])
 
 
@@ -414,7 +443,7 @@ def main():
     y_ideal_pred = np.linspace (0, 1, len(set_used[4]))
     print(1-set_used[4].mean())
     print(((y_ideal_pred >= 0.726) == y_ideal).mean()) # accuracy
-    df_ideal = ROC_Curves(y_ideal_pred, y_ideal)
+    df_ideal, success_ideal, n_ideal = ROC_Curves(y_ideal_pred, y_ideal)
     
     plt.plot(df_scores.threshold, df_scores['tpr'], label ='TPR')
     plt.plot(df_scores.threshold, df_scores['fpr'], label ='FPR')
@@ -435,5 +464,23 @@ def main():
     plt.legend()
     plt.show()
 
+    # Using Scikit Learn to plot ROC Curves
+    fpr, tpr, thresholds = roc_curve(set_used[4], y_pred)
+    plt.figure(figsize=(5,5))
+    plt.plot(fpr, tpr, label = 'Model')
+    plt.plot([0, 1], [0, 1], label = 'Random', linestyle = '--')
+    plt.xlabel('FPR')
+    plt.ylabel('TPR')
+    plt.legend()
+    plt.show()
+
+    # AUC
+    print ('AUC using scores computed manually: ', auc(df_scores.fpr, df_scores.tpr))
+    print ('AUC using scores computed through Scikit-Learn: ', auc(fpr,tpr))
+    print ('AUC using ideal scores: ', auc(df_ideal.fpr,df_ideal.tpr))
+    print('AUC using scores computed through Scikit-Learn roc_aux_score package: ', roc_auc_score(set_used[4], y_pred))
+
+    print('AUC proxy 10000 records: ', success/n)
+    
 if __name__ == '__main__':
     main()
