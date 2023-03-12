@@ -54,7 +54,7 @@ I have followed the steps described:
 
 * 👩‍💻 Use Logistic Regression to identify customers that are likely to churn
 
-**Main Conclusions** : Binary Classification. Logistic regression is similar to linear regression because both models take into account the bias term and weighted sum of features. The difference between these models is that the output of linear regression is a real number, while logistic regression outputs a value between zero and one, applying the sigmoid function to the linear regression formula.
+**Main Conclusions** : Logistic regression is similar to linear regression because both models take into account the bias term and weighted sum of features. The difference between these models is that the output of linear regression is a real number, while logistic regression outputs a value between zero and one, applying the sigmoid function to the linear regression formula and is used for binary classification.
 
 $$g(x_i)=Sigmoid(w_0+w_1\times(x_1)+w_2\times(x_2)+...+w_n\times(x_n))$$ 
 

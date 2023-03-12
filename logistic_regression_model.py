@@ -224,8 +224,7 @@ def evaluation_measure (model, X_val, set_used):
     """
     y_pred = model.predict_proba(X_val)[:,1]
 
-    #Accuracy - As there is classe inbalance in the data, accuracy is not a good metric for evaluating the model
-    
+    # Accuracy - As there is classe inbalance in the data, accuracy is not a good metric for evaluating the model
     thresholds = np.linspace(0, 1, 21)
 
     scores = []
@@ -235,7 +234,15 @@ def evaluation_measure (model, X_val, set_used):
         print('%.2f %.3f' % (t, score))
         scores.append(score)
 
-    return score
+    # Confusion matrix (This is a different way to evaluate my model which is not affected by inbalance)
+    actual_positive = (set_used[4] == 1)
+    actual_negative = (set_used[4] == 0)
+
+    t=0.5
+    predict_positive = (y_pred >= t)
+    predict_negative = (y_pred <= t)
+
+    return score, actual_positive, actual_negative, predict_positive, predict_negative
 
 
 def parse_arguments():
@@ -324,8 +331,12 @@ def main():
 
 
     # Evaluating the model
-    score = evaluation_measure (model, X_val, set_used)
-    print(score)
+    score,actual_positive, actual_negative, predict_positive, predict_negative = evaluation_measure (model, X_val, set_used)
+    # prints an array where the value is true only if both are true
+    print((predict_positive & actual_positive).sum())
+    print((predict_negative & actual_negative).sum()) 
+
+
 
 if __name__ == '__main__':
     main()
