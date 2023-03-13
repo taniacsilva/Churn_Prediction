@@ -323,24 +323,17 @@ def ROC_Curves (y_pred, set_used):
 
     return df_scores, success, n
 
-def parse_arguments():
-    """This function parses the argument(s) of this model
-
-        Args:
-            file_name: name of the command line field to insert on the runtime
-
-        Return:
-            args: Stores the extracted data from the parser run
-    """
-    parser = argparse.ArgumentParser(description="Process all the arguments for this model")
-    parser.add_argument("file_name", help="The csv file name")
-    args = parser.parse_args()
-
-    return args
-
 
 def cross_validation_train (x_train, y_train, categorical, numerical, C = 0.1):
     """ This function trains the model using only train and validation set
+
+        Args:
+            x_train:
+            y_train:
+            categorical:
+            numerical:
+            C: regularization parameter
+
     """
     dicts = x_train[categorical + numerical].to_dict(orient = "records")
 
@@ -359,7 +352,45 @@ def cross_validation_predict(df, dv, model, categorical, numerical):
     y_pred = model.predict_proba(X)[:,1]
 
     return y_pred
-    
+
+def cross_validation_function(full_train, categorical, numerical):
+
+    n_splits = 5
+    for C in tqdm([0.001, 0.01, 0.1, 0.5, 1, 5, 10]):
+        scores = []
+        kFold = KFold(n_splits=n_splits, shuffle=True, random_state=1)
+        for train_idx, val_idx in tqdm(kFold.split(full_train), total=n_splits):
+            df_train = full_train.iloc[train_idx]
+            df_val = full_train.iloc[val_idx]
+
+            y_train = df_train.churn.values
+            y_val = df_val.churn.values
+
+            dv, model = cross_validation_train(df_train, y_train,categorical, numerical, C = C)
+            y_pred = cross_validation_predict(df_val, dv, model,categorical, numerical)
+            auc = roc_auc_score(y_val, y_pred)
+            scores.append(auc)
+
+        print('C=%s %.3f +- %.3f' % (C, np.mean(scores), np.std(scores)))
+
+    return scores
+
+
+def parse_arguments():
+    """This function parses the argument(s) of this model
+
+        Args:
+            file_name: name of the command line field to insert on the runtime
+
+        Return:
+            args: Stores the extracted data from the parser run
+    """
+    parser = argparse.ArgumentParser(description="Process all the arguments for this model")
+    parser.add_argument("file_name", help="The csv file name")
+    args = parser.parse_args()
+
+    return args
+
 
 def main():
     """This is the main function of this Linear Model Regression Implementation model"""
@@ -509,9 +540,17 @@ def main():
     # Cross Validation 
 
     dv, model = cross_validation_train(set_used[0], set_used[3], categorical, numerical)
-    y_pred = cross_validation_predict(set_used[1], dv, model, categorical, numerical)
-    print(y_pred)
+    y_pred = cross_validation_predict(full_train, dv, model, categorical, numerical)
 
+    scores = cross_validation_function(full_train, categorical, numerical)
+    
+    dv, model = cross_validation_train(set_used[6], set_used[7], categorical, numerical, C=1)
 
+    full_test = pd.DataFrame(pd.merge(set_used[2], set_used[5], left_index=True,right_index=True))
+    y_pred = cross_validation_predict(full_test, dv, model, categorical, numerical)
+
+    accuracy = roc_auc_score(set_used[5], y_pred)
+    print(accuracy)
+    
 if __name__ == '__main__':
     main()
