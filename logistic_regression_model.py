@@ -14,6 +14,8 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import roc_curve
 from sklearn.metrics import auc
 from sklearn.metrics import roc_auc_score
+from sklearn.model_selection import KFold
+from tqdm.auto import tqdm
 
 #Data Preparation
 def data_preparation (file_name):
@@ -213,7 +215,7 @@ def logst_regr_model (X_train, X_val, set_used):
     #Predictions
     churn_decision = (y_pred >= 0.5)
 
-    return model, churn_decision
+    return model, churn_decision, y_pred
 
 
 def evaluation_measure (y_pred, set_used):
@@ -337,6 +339,28 @@ def parse_arguments():
     return args
 
 
+def cross_validation_train (x_train, y_train, categorical, numerical, C = 0.1):
+    """ This function trains the model using only train and validation set
+    """
+    dicts = x_train[categorical + numerical].to_dict(orient = "records")
+
+    dv = DictVectorizer(sparse=False)
+    x_train = dv.fit_transform(dicts)
+
+    model = LogisticRegression(C=C, max_iter=1000)
+    model.fit(x_train, y_train)
+
+    return dv, model
+
+def cross_validation_predict(df, dv, model, categorical, numerical):
+    dicts = df[categorical + numerical].to_dict(orient = "records")
+
+    X = dv.transform(dicts)
+    y_pred = model.predict_proba(X)[:,1]
+
+    return y_pred
+    
+
 def main():
     """This is the main function of this Linear Model Regression Implementation model"""
     args = parse_arguments()
@@ -380,7 +404,7 @@ def main():
     ## Training the model (Train and Validation Set)
     X_train, X_val, dv = one_hot_enconding (set_used[0],set_used[1], categorical, numerical)
 
-    model, churn_decision = logst_regr_model(X_train, X_val, set_used[3])
+    model, churn_decision, y_pred = logst_regr_model(X_train, X_val, set_used[3])
 
     
     # Returns the Weight/ Coefficients of the logistic regression model
@@ -400,7 +424,7 @@ def main():
     
     X_full_train, X_test, dv = one_hot_enconding (set_used[6],set_used[2], categorical, numerical)
 
-    model, churn_decision = logst_regr_model(X_full_train, X_test, set_used[7])
+    model, churn_decision, y_pred = logst_regr_model(X_full_train, X_test, set_used[7])
 
     # Returns the accuracy computed using as basis validation dataset
     print("Accuracy: ",(set_used[5] == churn_decision).mean())
@@ -482,5 +506,12 @@ def main():
 
     print('AUC proxy 10000 records: ', success/n)
     
+    # Cross Validation 
+
+    dv, model = cross_validation_train(set_used[0], set_used[3], categorical, numerical)
+    y_pred = cross_validation_predict(set_used[1], dv, model, categorical, numerical)
+    print(y_pred)
+
+
 if __name__ == '__main__':
     main()
