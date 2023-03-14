@@ -83,23 +83,23 @@ Then, I have trained the model using Scikit Learn and applied it to the validati
 * ✔ Evaluating the model (Further Analysis)
 
  **Main Conclusions** : 
- * Accuracy: Accurcy measures the fraction of correct predictions. Specifically, it is the number of correct predictions divided by the total number of predictions. I have evaluate the accuracy of my model accross different thresholds to understand which one is the best one. The best decision cutoff, associated with the hightest accuracy (80%), was indeed 0.5. If the threshold is defined in 1, the model is dummy and predicts that no clients will churn, the accuracy would be 73%.. The accuracy between this dummy model and my model is not very considerable, so it can be concluded that accuracy is not the best metric for this kind of data, with class imbalance. Accuracy can not tell how good the model is because the dataset is unbalanced, which means that there are more instances from one category than the other.
+ * Accuracy: Measures the fraction of correct predictions. Specifically, it is the number of correct predictions divided by the total number of predictions. I have evaluated the accuracy of my model accross different thresholds to understand which one is the best one. The best decision cutoff, associated with the hightest accuracy (80%), was indeed 0.5. If the threshold is defined in 1, the model is dummy and predicts that no clients will churn, the accuracy would be 73%. The accuracy between this dummy model and my model is not very considerable, so it can be concluded that accuracy can not tell how good the model is because the dataset is unbalanced, which means that there are more instances from one category than the other, also known as class imbalance.
  
  * Confusion table is a way of measuring different types of errors and correct decisions that binary classifiers can make. Considering this information, it is possible to evaluate the quality of the model by different strategies. When comes to a prediction of an LR model, each falls into one of four different categories:
-    * Prediction is that the customer WILL churn. This is known as the Positive class~
-        * And Customer actually churned - Known as a True Positive (TP)
-        * But Customer actually did not churn - Knwon as a False Positive (FP)
-    * Prediction is that the customer WILL NOT churn' - This is known as the Negative class
-        * Customer did not churn - True Negative (TN)
-        * Customer churned - False Negative (FN)
+    * Prediction is that the customer WILL churn. This is known as the Positive class
+        * And Customer actually churned - Known as a **True Positive** (TP)
+        * But Customer actually did not churn - Knwon as a **False Positive** (FP)
+    * Prediction is that the customer WILL NOT churn - This is known as the Negative class
+        * Customer did not churn - **True Negative** (TN)
+        * Customer churned - **False Negative** (FN)
     
     The accuracy corresponds to the sum of TN and TP divided by the total of observations
 
 * Precision and Recall:
     * Precision tell us the fraction of positive predictions that are correct. It takes into account only the positive class (TP and FP - second column of the confusion matrix), as is stated in the following formula:
-    $P = \frac{TP}{(TP+FP)}$
+    $$P = \frac{TP}{(TP+FP)}$$
     * Recall measures the fraction of correctly identified postive instances. It considers parts of the postive and negative classes (TP and FN - second row of confusion table). The formula of this metric is presented below:
-    $R = \frac{TP}{(TP + FN)}
+    $$R = \frac{TP}{(TP+FN)}$$
 
     
  * ROC Curves evaluate the performance of the model accross many different thresholds and plots FPR (False Positive Rate) vs TPR (True Positive Rate). To quantify how far/close the model is from ideal model I computed the Area Under the Curve (AUC). 
