@@ -80,7 +80,7 @@ Then, I have trained the model using Scikit Learn and applied it to the validati
 **Main Conclusions**: After finding the best model, it was trained with training and validation partitions (x_full_train) and the final accuracy was calculated on the test partition.
 
 
-* ✔ Evaluating the model (Further Analysis)
+✔ Evaluating the model (Further Analysis)
 
  **Main Conclusions** : 
  * Accuracy: Measures the fraction of correct predictions. Specifically, it is the number of correct predictions divided by the total number of predictions. I have evaluated the accuracy of my model accross different thresholds to understand which one is the best one. The best decision cutoff, associated with the hightest accuracy (80%), was indeed 0.5. If the threshold is defined in 1, the model is dummy and predicts that no clients will churn, the accuracy would be 73%. The accuracy between this dummy model and my model is not very considerable, so it can be concluded that accuracy can not tell how good the model is because the dataset is unbalanced, which means that there are more instances from one category than the other, also known as class imbalance.
