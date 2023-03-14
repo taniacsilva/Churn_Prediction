@@ -17,7 +17,7 @@ from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import KFold
 from tqdm.auto import tqdm
 
-#Data Preparation
+
 def data_preparation (file_name):
     """This function imports the data from the csv file and performs data preparation
         Args:
@@ -147,7 +147,6 @@ def mutual_info_churn_score(full_train, categorical):
         Return:
             df_mt_info_score (pandas.DataFrame) : dataframe that contains the mutusl info score by explanatory variable (categorical)
     """
-
     mt_info_score = []
     
     for c in categorical:
@@ -369,7 +368,7 @@ def cross_validation_predict(df, dv, model, categorical, numerical):
 
 
 def cross_validation_function(full_train, categorical, numerical):
-    """This functions enables to perform cross validation.Eevaluating the same model on different subsets
+    """This functions enables to perform cross validation. Evaluating the same model on different subsets
         (k-folds) of a dataset, getting the average prediction, and spread within predictions. 
 
         Args:
@@ -420,6 +419,7 @@ def parse_arguments():
 def main():
     """This is the main function of this Linear Model Regression Implementation model"""
     args = parse_arguments()
+
     ### Prepare data
     data, string_col = data_preparation(args.file_name)
 
@@ -458,7 +458,7 @@ def main():
         )
     
 
-    ### One-hot EncodingT
+    ### One-hot Encoding
     X_train, X_val, dv = one_hot_enconding (set_used[0],set_used[1], categorical, numerical)
     
     ### Training the model (Train and Validation Set)
@@ -556,7 +556,6 @@ def main():
     print('AUC proxy 10000 records: ', success/n)
     
     # Cross Validation 
-
     dv, model = cross_validation_train(set_used[0], set_used[3], categorical, numerical)
     y_pred = cross_validation_predict(full_train, dv, model, categorical, numerical)
     
