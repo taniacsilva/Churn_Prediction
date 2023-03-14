@@ -64,26 +64,12 @@ In this way, the sigmoid function allows transforming a score into a probability
 
 Then, I have trained the model using Scikit Learn and applied it to the validation dataset.
 
-
-✔ **Evaluating the model** 
-
- *Main Conclusions* : To evaluate the model I have used the accuracy metric $\frac{TP + TN}{TP + TN + FP + FN}$
-
-
-🔎 **Model Interpretation**
-
-*Main Conclusions* : Interpret the coefficients obtained for the logistic regression model.
-
-
-🎆 **Using the model**
-
-*Main Conclusions*: After finding the best model, it was trained with training and validation partitions (x_full_train) and the final accuracy was calculated on the test partition.
-
-
 ✔ **Evaluating the model (Further Analysis)**
 
  *Main Conclusions* : 
  * Accuracy: Measures the fraction of correct predictions. Specifically, it is the number of correct predictions divided by the total number of predictions. I have evaluated the accuracy of my model accross different thresholds to understand which one is the best one. The best decision cutoff, associated with the hightest accuracy (80%), was indeed 0.5. If the threshold is defined in 1, the model is dummy and predicts that no clients will churn, the accuracy would be 73%. The accuracy between this dummy model and my model is not very considerable, so it can be concluded that accuracy can not tell how good the model is because the dataset is unbalanced, which means that there are more instances from one category than the other, also known as class imbalance.
+
+ $$\frac{TP + TN}{TP + TN + FP + FN}$$
  
  * Confusion table is a way of measuring different types of errors and correct decisions that binary classifiers can make. Considering this information, it is possible to evaluate the quality of the model by different strategies. When comes to a prediction of an LR model, each falls into one of four different categories:
     * Prediction is that the customer WILL churn. This is known as the Positive class
@@ -110,6 +96,15 @@ Then, I have trained the model using Scikit Learn and applied it to the validati
 * AUC (Area Under the Curve) can be interpreted as the probability that a randomly selected positive example has a greater score than a randomly selected negative example. To quantify how far/close the model is from ideal model I computed the AUC. The AUC of a random model is 0.5, while for an ideal one is 1.
 
  * Cross Validation: evaluating the same model on different subsets of a dataset, getting the average prediction, and spread within predictions. This method is applied in the parameter tuning step, which is the process of selecting the best parameter. In this algorithm, the full training dataset is divided into k partitions, I have trained the model in k-1 partitions of this dataset and evaluate it on the remaining subset. Then, I end up evaluating the model in all the k folds, and I have calculated the average evaluation metric for all the folds. In general, if the dataset is large, hold-out validation dataset strategy should be used. In the other hand, if the dataset is small or if I want to know the standard deviation of the model across different folds, cross-validation approach can use used.
+
+🔎 **Model Interpretation**
+
+*Main Conclusions* : Interpret the coefficients obtained for the logistic regression model.
+
+
+🎆 **Using the model**
+
+*Main Conclusions*: After finding the best model, it was trained with training and validation partitions (x_full_train) and the final accuracy was calculated on the test partition.
 
 
 
