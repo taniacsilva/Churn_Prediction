@@ -48,6 +48,7 @@ def data_preparation (file_name):
 
     return data, string_col
 
+
 def split_train_val_test(data):
     """This functions splits the dataset between train, validation and test
 
