@@ -14,19 +14,19 @@ With this project, I aim to build a model with historical data from customers an
 
 I have followed the steps described:
 
-* 👀 Prepare data
+👀 _**Prepare data**_
 
-**Main Conclusions** : This step included data obtention and some procedures of data preparation, namely look at the data, make columns names and values look uniform, check if all the columns read correctly and check if the churn variable needs any preparation.
-
-
-* 🐱‍👤 Setting up the validation framework (split between train, validation and test)
-
-**Main Conclusions** : I have splitted the dataset using Scikit-Learn into train, validation and test.
+*Main Conclusions* : This step included data obtention and some procedures of data preparation, namely look at the data, make columns names and values look uniform, check if all the columns read correctly and check if the churn variable needs any preparation.
 
 
-* 🌲 Exploratory Data Analysis (EDA)
+🐱‍👤 _**Setting up the validation framework (split between train, validation and test)**_
 
-**Main Conclusions** : Included checking missing values, look at the target variable (churn) and look at numerical and categorical variables. I have also performed feature importance analysis (as part of Exploratory Data Analysis) to identify which features affect the target variable:
+*Main Conclusions* : I have splitted the dataset using Scikit-Learn into train, validation and test.
+
+
+🌲 _**Exploratory Data Analysis(EDA)**_
+
+*Main Conclusions* : Included checking missing values, look at the target variable (churn) and look at numerical and categorical variables. I have also performed feature importance analysis (as part of Exploratory Data Analysis) to identify which features affect the target variable:
 
 * *Churn Rate* - Difference between mean of the target variable and mean of categories for a feature. If this difference is greater than 0, it means that the category is less likely to churn, and if the difference is lower than 0, the group is more likely to churn. The larger differences are indicators that a variable is more important than others.
 
@@ -47,14 +47,14 @@ I have followed the steps described:
         Where, r is correlation coefficient
 
 
-* 0️⃣1️⃣ One-hot Encoding
+ 0️⃣1️⃣ _**One-hot Encoding**_
 
-**Main Conclusions** : I have used Scikit Learn - Dict Vectorizer - to encode categorical features. This method represents each category of a variable as one column, and a 1 is assigned if the value belongs to the category or 0 otherwise.
+*Main Conclusions* : I have used Scikit Learn - Dict Vectorizer - to encode categorical features. This method represents each category of a variable as one column, and a 1 is assigned if the value belongs to the category or 0 otherwise.
 
 
-* 👩‍💻 Use Logistic Regression to identify customers that are likely to churn
+ 👩‍💻 _**Use Logistic Regression to identify customers that are likely to churn**_
 
-**Main Conclusions** : Logistic regression is similar to linear regression because both models take into account the bias term and weighted sum of features. The difference between these models is that the output of linear regression is a real number, while logistic regression outputs a value between zero and one, applying the sigmoid function to the linear regression formula and is used for binary classification.
+*Main Conclusions* : Logistic regression is similar to linear regression because both models take into account the bias term and weighted sum of features. The difference between these models is that the output of linear regression is a real number, while logistic regression outputs a value between zero and one, applying the sigmoid function to the linear regression formula and is used for binary classification.
 
 $$g(x_i)=Sigmoid(w_0+w_1\times(x_1)+w_2\times(x_2)+...+w_n\times(x_n))$$ 
 
@@ -65,24 +65,24 @@ In this way, the sigmoid function allows transforming a score into a probability
 Then, I have trained the model using Scikit Learn and applied it to the validation dataset.
 
 
-* ✔ Evaluating the model 
+✔ __**Evaluating the model**_ 
 
- **Main Conclusions** : To evaluate the model I have used the accuracy metric $\frac{TP + TN}{TP + TN + FP + FN}$
+ *Main Conclusions* : To evaluate the model I have used the accuracy metric $\frac{TP + TN}{TP + TN + FP + FN}$
 
 
-* 🔎 Model Interpretation
+🔎 _**Model Interpretation**_
 
-**Main Conclusions** : Interpret the coefficients obtained for the logistic regression model.
+*Main Conclusions* : Interpret the coefficients obtained for the logistic regression model.
 
 
 🎆 _**Using the model**_
 
-**Main Conclusions**: After finding the best model, it was trained with training and validation partitions (x_full_train) and the final accuracy was calculated on the test partition.
+*Main Conclusions*: After finding the best model, it was trained with training and validation partitions (x_full_train) and the final accuracy was calculated on the test partition.
 
 
 ✔ _**Evaluating the model (Further Analysis)**_
 
- **Main Conclusions** : 
+ *Main Conclusions* : 
  * Accuracy: Measures the fraction of correct predictions. Specifically, it is the number of correct predictions divided by the total number of predictions. I have evaluated the accuracy of my model accross different thresholds to understand which one is the best one. The best decision cutoff, associated with the hightest accuracy (80%), was indeed 0.5. If the threshold is defined in 1, the model is dummy and predicts that no clients will churn, the accuracy would be 73%. The accuracy between this dummy model and my model is not very considerable, so it can be concluded that accuracy can not tell how good the model is because the dataset is unbalanced, which means that there are more instances from one category than the other, also known as class imbalance.
  
  * Confusion table is a way of measuring different types of errors and correct decisions that binary classifiers can make. Considering this information, it is possible to evaluate the quality of the model by different strategies. When comes to a prediction of an LR model, each falls into one of four different categories:
