@@ -14,17 +14,17 @@ With this project, I aim to build a model with historical data from customers an
 
 I have followed the steps described:
 
-👀 _**Prepare data**_
+👀 **Prepare data**
 
 *Main Conclusions* : This step included data obtention and some procedures of data preparation, namely look at the data, make columns names and values look uniform, check if all the columns read correctly and check if the churn variable needs any preparation.
 
 
-🐱‍👤 _**Setting up the validation framework (split between train, validation and test)**_
+🐱‍👤 **Setting up the validation framework (split between train, validation and test)**
 
 *Main Conclusions* : I have splitted the dataset using Scikit-Learn into train, validation and test.
 
 
-🌲 _**Exploratory Data Analysis(EDA)**_
+🌲 **Exploratory Data Analysis(EDA)**
 
 *Main Conclusions* : Included checking missing values, look at the target variable (churn) and look at numerical and categorical variables. I have also performed feature importance analysis (as part of Exploratory Data Analysis) to identify which features affect the target variable:
 
@@ -47,12 +47,12 @@ I have followed the steps described:
         Where, r is correlation coefficient
 
 
- 0️⃣1️⃣ _**One-hot Encoding**_
+ 0️⃣1️⃣ **One-hot Encoding**
 
 *Main Conclusions* : I have used Scikit Learn - Dict Vectorizer - to encode categorical features. This method represents each category of a variable as one column, and a 1 is assigned if the value belongs to the category or 0 otherwise.
 
 
- 👩‍💻 _**Use Logistic Regression to identify customers that are likely to churn**_
+ 👩‍💻 **Use Logistic Regression to identify customers that are likely to churn**
 
 *Main Conclusions* : Logistic regression is similar to linear regression because both models take into account the bias term and weighted sum of features. The difference between these models is that the output of linear regression is a real number, while logistic regression outputs a value between zero and one, applying the sigmoid function to the linear regression formula and is used for binary classification.
 
@@ -65,22 +65,22 @@ In this way, the sigmoid function allows transforming a score into a probability
 Then, I have trained the model using Scikit Learn and applied it to the validation dataset.
 
 
-✔ __**Evaluating the model**_ 
+✔ **Evaluating the model** 
 
  *Main Conclusions* : To evaluate the model I have used the accuracy metric $\frac{TP + TN}{TP + TN + FP + FN}$
 
 
-🔎 _**Model Interpretation**_
+🔎 **Model Interpretation**
 
 *Main Conclusions* : Interpret the coefficients obtained for the logistic regression model.
 
 
-🎆 _**Using the model**_
+🎆 **Using the model**
 
 *Main Conclusions*: After finding the best model, it was trained with training and validation partitions (x_full_train) and the final accuracy was calculated on the test partition.
 
 
-✔ _**Evaluating the model (Further Analysis)**_
+✔ **Evaluating the model (Further Analysis)**
 
  *Main Conclusions* : 
  * Accuracy: Measures the fraction of correct predictions. Specifically, it is the number of correct predictions divided by the total number of predictions. I have evaluated the accuracy of my model accross different thresholds to understand which one is the best one. The best decision cutoff, associated with the hightest accuracy (80%), was indeed 0.5. If the threshold is defined in 1, the model is dummy and predicts that no clients will churn, the accuracy would be 73%. The accuracy between this dummy model and my model is not very considerable, so it can be concluded that accuracy can not tell how good the model is because the dataset is unbalanced, which means that there are more instances from one category than the other, also known as class imbalance.
