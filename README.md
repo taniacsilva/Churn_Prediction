@@ -104,6 +104,16 @@ I have followed the steps described:
 
     **Main Conclusions**: After finding the best model, it was trained with training and validation partitions (x_full_train) and the final accuracy was calculated on the test partition.
 
+* ☁ Deploy the model
+
+    **Main Conclusions**: (WIP)
+
+    * *Saving and loading the model*
+        * Saving the model to pickle
+        * Loading the model from pickle
+     
+
+
 
 
 
