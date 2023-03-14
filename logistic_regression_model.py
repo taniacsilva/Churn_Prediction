@@ -49,7 +49,7 @@ def data_preparation (file_name):
     return data, string_col
 
 def split_train_val_test(data):
-    """ This functions splits the dataset between train, validation and test
+    """This functions splits the dataset between train, validation and test
 
         Args:
             data (pandas.DataFrame): list that contains the explanatory variables and objective variable
@@ -77,7 +77,7 @@ def split_train_val_test(data):
 
 
 def exploratory_data_analysis(set_used):
-    """ This function will make some exploratory data analysis
+    """This function will make some exploratory data analysis
 
         Args:
             set_used (list): list that contains x_train, x_val, x_test, y_train, y_val, y_test, x_full_train, y_full_train
@@ -219,21 +219,20 @@ def logst_regr_model (X_train, X_val, set_used):
 
 
 def evaluation_measure (y_pred, set_used):
-    """ This function intends to evaluate the model, using different metrics.
+    """This function intends to evaluate the model, using different metrics.
         
         Args:
-            X_val (Numpy Array) : Array that contains the explanatory variables one hot encoded for validation dataset
-            model (sklearn.linear_model._logistic.LogisticRegression) : Logistic regression model trained
+            y_pred (Numpy Array) : array that contains the predictions obtained from the model
             set_used (list) : list that contains x_train, x_val, x_test, y_train, y_val, y_test, x_full_train, y_full_train
 
-
+        Return: 
+            confusion_matrix (Numpy Array) : array that contains the TN, FP, FN, TP
+            precision (float) : fraction of positive predictions that are correct
+            recall (float) : fraction of correctly identified postive instances
     """
-
-    # Accuracy - As there is classe inbalance in the data, accuracy is not a good metric for evaluating the model
+    # Accuracy - As there is classe imbalance in the data, accuracy is not a good metric for evaluating the model
     thresholds = np.linspace(0, 1, 21)
-
     scores = []
-
     for t in thresholds:
         score = accuracy_score(set_used, y_pred >= t)
         print('%.2f %.3f' % (t, score))
@@ -242,37 +241,39 @@ def evaluation_measure (y_pred, set_used):
     # Confusion matrix (This is a different way to evaluate my model which is not affected by inbalance)
     actual_positive = (set_used == 1)
     actual_negative = (set_used == 0)
-
     t=0.5
     predict_positive = (y_pred >= t)
     predict_negative = (y_pred < t)
-
     # & prints an array where the value is true only if both are true
     tp = (predict_positive & actual_positive).sum() # true positive
     tn = (predict_negative & actual_negative).sum() # true negative
     fp = (predict_positive & actual_negative).sum() # false positive
     fn = (predict_negative & actual_positive).sum() # false negative
-
     confusion_matrix = np.array([
         [tn, fp],
-        [fn, fp]
+        [fn, tp]
         ])
     
-    # Precision
+    # Precision and Recall
     precision = tp / (tp + fp)
-
     recall = tp / (tp + fn)
 
-    # ROC Curves
-    
-    tpr = tp / (tp + fn)
-    fpr = fp / (tn + fp)
-
-    return score, confusion_matrix, precision, recall, tpr, fpr
+    return confusion_matrix, precision, recall
 
 
 def ROC_Curves (y_pred, set_used):
+    """This function enables the analysis of ROC Curves curves that consider Recall and FPR 
+        under all the possible thresholds. 
+    
+        Args: 
+            y_pred (Numpy Array) : array that contains the predictions obtained from the model
+            set_used (list) : list that contains x_train, x_val, x_test, y_train, y_val, y_test, x_full_train, y_full_train
 
+        Return: 
+            df_scores (Pandas.DataFrame) : Dataframe that contains for each threshold information about TP, FP, FN, TN, TPR and FPR
+            success (int) : int that saves the number of times that a randomly selected positive example has a greater score than a randomly selected negative example
+            n (int) : number of times that these examples are randomly selected. Number of repetitions of the check.
+    """
     thresholds = np.linspace(0, 1, 101)
 
     scores = []
@@ -293,11 +294,10 @@ def ROC_Curves (y_pred, set_used):
         columns = ['threshold', 'tp', 'fp', 'fn', 'tn']
         df_scores = pd.DataFrame(scores, columns=columns)
 
-        df_scores['tpr'] = df_scores.tp / (df_scores.tp + df_scores.fn)
+        df_scores['tpr'] = df_scores.tp / (df_scores.tp + df_scores.fn) # same as recall
         df_scores['fpr'] = df_scores.fp / (df_scores.tn + df_scores.fp)
 
         # AUC
-
         neg = y_pred[set_used == 0]
         pos = y_pred[set_used == 1]
        
@@ -309,12 +309,9 @@ def ROC_Curves (y_pred, set_used):
 
             if pos[pos_ind] > neg[neg_ind]:
                 success = success + 1
-        n = 50000
-        
-        
         """
         # Alternative - using numpy
-
+        n = 50000
         np.random.seed(1)
         pos_ind = np.random.randint (0, len(pos), size=n)
         neg_ind = np.random.randint (0, len(neg), size=n)
@@ -325,15 +322,19 @@ def ROC_Curves (y_pred, set_used):
 
 
 def cross_validation_train (x_train, y_train, categorical, numerical, C = 0.1):
-    """ This function trains the model using only train and validation set
+    """This function trains the model using training set, 
+        according to what is done in section 4.7 of the zoomcamp videos
 
         Args:
-            x_train:
-            y_train:
-            categorical:
-            numerical:
-            C: regularization parameter
+            x_train (Pandas.DataFrame) : dataframe that contains the explanatory variables
+            y_train (Pandas.Series) : series that contain the objective variable
+            categorical (list) : list of string that indicates which are the categorical variables
+            numerical (list) : list of string that indicates which are the numerical variables
+            C (float) : regularization parameter
 
+        Return:
+            dv (sklearn.feature_extraction._dict_vectorizer.DictVectorizer) : method for one hot encoding
+            model (sklearn.linear_model._logistic.LogisticRegression) : Logistic regression model trained
     """
     dicts = x_train[categorical + numerical].to_dict(orient = "records")
 
@@ -345,16 +346,40 @@ def cross_validation_train (x_train, y_train, categorical, numerical, C = 0.1):
 
     return dv, model
 
-def cross_validation_predict(df, dv, model, categorical, numerical):
-    dicts = df[categorical + numerical].to_dict(orient = "records")
 
+def cross_validation_predict(df, dv, model, categorical, numerical):
+    """This function predicts if each of the customers will churn or not,
+        according to what is done in section 4.7 of the zoomcamp videos
+    
+        Args:
+            df (Pandas.DataFrame) : dataframe that contains a merge between x_full_train and y_full_train that were both inside list set_used
+            dv (sklearn.feature_extraction._dict_vectorizer.DictVectorizer) : method for one hot encoding
+            model (sklearn.linear_model._logistic.LogisticRegression) : Logistic regression model trained
+            categorical (list) : list of string that indicates which are the categorical variables
+            numerical (list) : list of string that indicates which are the numerical variables
+        
+        Return:
+            y_pred (Numpy Array) : array that contains the predictions obtained from the model
+    """
+    dicts = df[categorical + numerical].to_dict(orient = "records")
     X = dv.transform(dicts)
     y_pred = model.predict_proba(X)[:,1]
 
     return y_pred
 
-def cross_validation_function(full_train, categorical, numerical):
 
+def cross_validation_function(full_train, categorical, numerical):
+    """This functions enables to perform cross validation.Eevaluating the same model on different subsets
+        (k-folds) of a dataset, getting the average prediction, and spread within predictions. 
+
+        Args:
+            full_train (Pandas.DataFrame) : dataframe that contains a merge between x_full_train and y_full_train that were both inside list set_used
+            categorical (list) : list of string that indicates which are the categorical variables
+            numerical (list) : list of string that indicates which are the numerical variables
+
+        Return:
+            scores (list) : list that contains the average auc and standard deviation for each fold
+    """
     n_splits = 5
     for C in tqdm([0.001, 0.01, 0.1, 0.5, 1, 5, 10]):
         scores = []
@@ -395,14 +420,15 @@ def parse_arguments():
 def main():
     """This is the main function of this Linear Model Regression Implementation model"""
     args = parse_arguments()
-    
+    ### Prepare data
     data, string_col = data_preparation(args.file_name)
+
+    ### Setting up the validation framework (split between train, validation and test)
     set_used = split_train_val_test(data)
 
+    ### Exploratory Data Analysis(EDA)
     global_churn_rate, numerical, categorical, unique = exploratory_data_analysis(set_used)
-
     full_train, df_group = feature_importance(set_used, categorical, global_churn_rate)
-
     df_mt_info_score = mutual_info_churn_score (full_train, categorical)
 
     # Mutual info score sorted
@@ -432,9 +458,10 @@ def main():
         )
     
 
-    ## Training the model (Train and Validation Set)
+    ### One-hot EncodingT
     X_train, X_val, dv = one_hot_enconding (set_used[0],set_used[1], categorical, numerical)
-
+    
+    ### Training the model (Train and Validation Set)
     model, churn_decision = logst_regr_model(X_train, X_val, set_used[3])
 
     
@@ -447,26 +474,19 @@ def main():
     # Returns the accuracy computed using as basis validation dataset
     print("Accuracy: ",(set_used[4] == churn_decision).mean())
 
-    # Model Interpretation
+    ### Model Interpretation
     print(dict(zip(dv.get_feature_names_out(),model.coef_[0].round(3))))
     
-
-    ## Using the model (Full Train and Test Set)
-    
+    ### Using the model (Full Train and Test Set)
     X_full_train, X_test, dv = one_hot_enconding (set_used[6],set_used[2], categorical, numerical)
-
     model, churn_decision = logst_regr_model(X_full_train, X_test, set_used[7])
 
     # Returns the accuracy computed using as basis validation dataset
     print("Accuracy: ",(set_used[5] == churn_decision).mean())
 
-
-    # Evaluating the model
+    ### Evaluating the model
     y_pred = model.predict_proba(X_val)[:,1]
-
-    score,confusion_matrix, precision, recall, tpr, fpr = evaluation_measure (y_pred, set_used[4])
-    
-    # Accuracy 
+    confusion_matrix, precision, recall = evaluation_measure (y_pred, set_used[4])
     
     # Confusion matrix
     print(confusion_matrix)
@@ -489,9 +509,7 @@ def main():
     df_rand, success_rand, n_rand = ROC_Curves(y_rand, set_used[4])
     print(df_rand[::10])
 
-
     # Ideal Model
-
     num_neg = (set_used[4] == 0).sum()
     num_pos = (set_used[4] == 1).sum()
     y_ideal = np.repeat ([0, 1], [num_neg, num_pos])
@@ -541,9 +559,9 @@ def main():
 
     dv, model = cross_validation_train(set_used[0], set_used[3], categorical, numerical)
     y_pred = cross_validation_predict(full_train, dv, model, categorical, numerical)
-
-    scores = cross_validation_function(full_train, categorical, numerical)
     
+    scores = cross_validation_function(full_train, categorical, numerical)
+    print(type(scores))
     dv, model = cross_validation_train(set_used[6], set_used[7], categorical, numerical, C=1)
 
     full_test = pd.DataFrame(pd.merge(set_used[2], set_used[5], left_index=True,right_index=True))
@@ -551,6 +569,7 @@ def main():
 
     accuracy = roc_auc_score(set_used[5], y_pred)
     print(accuracy)
+
 
 if __name__ == '__main__':
     main()
