@@ -103,17 +103,13 @@ Then, I have trained the model using Scikit Learn and applied it to the validati
 
     
  * ROC (Receiver Operating Characteristic) curves consider Recall and FPR under all the possible thresholds.  The ROC curves need comparison against a point of reference to evaluate its performance, so the corresponding curves of random and ideal models are required. It is possible to plot the ROC curves with FPR and Recall scores vs thresholds, or FPR vs Recall. If the threshold is 0 or 1, the TPR and Recall scores are the opposite of the threshold (1 and 0 respectively), but they have different meanings.
-    * FPR is the fraction of false positives (FP) divided by the total number of negatives (FP and TN - the first row of confusion matrix), and we want to minimize it. The formula of FPR is the following:
+    * FPR is the fraction of false positives (FP) divided by the total number of negatives (FP and TN - the first row of confusion matrix), and I want to minimize it. The formula of FPR is the following:
         $$\frac{FP}{(FP + TN)}$$
-    * In the other hand, TPR or Recall is the fraction of true positives (TP) divided by the total number of positives (FN and TP - second row of confusion table), and we want to maximize this metric. 
+    * In the other hand, TPR or Recall is the fraction of true positives (TP) divided by the total number of positives (FN and TP - second row of confusion table), and I want to maximize this metric. 
 
-* AUC (Area Under the Curve) can be interpreted as the probability that a randomly selected positive example has a greater score than a randomly selected negative example. To quantify how far/close the model is from ideal model I computed the AUC.The AUC of a random model is 0.5, while for an ideal one is 1.
+* AUC (Area Under the Curve) can be interpreted as the probability that a randomly selected positive example has a greater score than a randomly selected negative example. To quantify how far/close the model is from ideal model I computed the AUC. The AUC of a random model is 0.5, while for an ideal one is 1.
 
- * Cross Validation: evaluating the same model on different subsets of a dataset, getting the average prediction, and spread within predictions. This method is applied in the parameter tuning step, which is the process of selecting the best parameter.
-
- In this algorithm, the full training dataset is divided into k partitions, I have trained the model in k-1 partiions of this dataset and evaluate it on the remaining subset. Then, I end up evaluating the model in all the k folds, and we calculate the average evaluation metric for all the folds.
-
- In general, if the dataset is large, we should use the hold-out validation dataset strategy. In the other hand, if the dataset is small or if I want to know the standard deviation of the model across different folds, cross-validation approach can use used.
+ * Cross Validation: evaluating the same model on different subsets of a dataset, getting the average prediction, and spread within predictions. This method is applied in the parameter tuning step, which is the process of selecting the best parameter. In this algorithm, the full training dataset is divided into k partitions, I have trained the model in k-1 partitions of this dataset and evaluate it on the remaining subset. Then, I end up evaluating the model in all the k folds, and I have calculated the average evaluation metric for all the folds. In general, if the dataset is large, hold-out validation dataset strategy should be used. In the other hand, if the dataset is small or if I want to know the standard deviation of the model across different folds, cross-validation approach can use used.
 
 
 
