@@ -215,7 +215,7 @@ def logst_regr_model (X_train, X_val, set_used):
     #Predictions
     churn_decision = (y_pred >= 0.5)
 
-    return model, churn_decision, y_pred
+    return model, churn_decision
 
 
 def evaluation_measure (y_pred, set_used):
@@ -435,7 +435,7 @@ def main():
     ## Training the model (Train and Validation Set)
     X_train, X_val, dv = one_hot_enconding (set_used[0],set_used[1], categorical, numerical)
 
-    model, churn_decision, y_pred = logst_regr_model(X_train, X_val, set_used[3])
+    model, churn_decision = logst_regr_model(X_train, X_val, set_used[3])
 
     
     # Returns the Weight/ Coefficients of the logistic regression model
@@ -455,7 +455,7 @@ def main():
     
     X_full_train, X_test, dv = one_hot_enconding (set_used[6],set_used[2], categorical, numerical)
 
-    model, churn_decision, y_pred = logst_regr_model(X_full_train, X_test, set_used[7])
+    model, churn_decision = logst_regr_model(X_full_train, X_test, set_used[7])
 
     # Returns the accuracy computed using as basis validation dataset
     print("Accuracy: ",(set_used[5] == churn_decision).mean())
@@ -551,6 +551,6 @@ def main():
 
     accuracy = roc_auc_score(set_used[5], y_pred)
     print(accuracy)
-    
+
 if __name__ == '__main__':
     main()
