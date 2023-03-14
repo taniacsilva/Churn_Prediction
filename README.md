@@ -96,27 +96,18 @@ Then, I have trained the model using Scikit Learn and applied it to the validati
     The accuracy corresponds to the sum of TN and TP divided by the total of observations
 
 * Precision and Recall:
-    * Precision tell us the fraction of positive predictions that are correct. It takes into account only the positive class (TP and FP - second column of the confusion matrix), as is stated in the following formula:
+    * Precision indicates the fraction of positive predictions that are correct. It takes into account only the positive class (TP and FP - second column of the confusion matrix), as is stated in the following formula:
     $$P = \frac{TP}{(TP+FP)}$$
     * Recall measures the fraction of correctly identified postive instances. It considers parts of the postive and negative classes (TP and FN - second row of confusion table). The formula of this metric is presented below:
     $$R = \frac{TP}{(TP+FN)}$$
 
     
- * ROC Curves evaluate the performance of the model accross many different thresholds and plots FPR (False Positive Rate) vs TPR (True Positive Rate). To quantify how far/close the model is from ideal model I computed the Area Under the Curve (AUC). 
- ROC stands for Receiver Operating Characteristic, and this idea was applied during the Second World War for evaluating the strength of radio detectors. 
+ * ROC (Receiver Operating Characteristic) curves consider Recall and FPR under all the possible thresholds.  The ROC curves need comparison against a point of reference to evaluate its performance, so the corresponding curves of random and ideal models are required. It is possible to plot the ROC curves with FPR and Recall scores vs thresholds, or FPR vs Recall. If the threshold is 0 or 1, the TPR and Recall scores are the opposite of the threshold (1 and 0 respectively), but they have different meanings.
+    * FPR is the fraction of false positives (FP) divided by the total number of negatives (FP and TN - the first row of confusion matrix), and we want to minimize it. The formula of FPR is the following:
+        $$\frac{FP}{(FP + TN)}$$
+    * In the other hand, TPR or Recall is the fraction of true positives (TP) divided by the total number of positives (FN and TP - second row of confusion table), and we want to maximize this metric. 
 
- FPR is the fraction of false positives (FP) divided by the total number of negatives (FP and TN - the first row of confusion matrix), and we want to minimize it. The formula of FPR is the following:
-
- $\frac{FP}{(FP + TN)}$
-
- In the other hand, TPR or Recall is the fraction of true positives (TP) divided by the total number of positives (FN and TP - second row of confusion table), and we want to maximize this metric. 
-
- ROC curves consider Recall and FPR under all the possible thresholds. If the threshold is 0 or 1, the TPR and Recall scores are the opposite of the threshold (1 and 0 respectively), but they have different meanings.
-
- The ROC curves need comparison against a point of reference to evaluate its performance, so the corresponding curves of random and ideal models are required. It is possible to plot the ROC curves with FPR and Recall scores vs thresholds, or FPR vs Recall.
- The AUC of a random model is 0.5, while for an ideal one is 1.
-
- AUC can be interpreted as the probability that a randomly selected positive example has a greater score than a randomly selected negative example.
+* AUC (Area Under the Curve) can be interpreted as the probability that a randomly selected positive example has a greater score than a randomly selected negative example. To quantify how far/close the model is from ideal model I computed the AUC.The AUC of a random model is 0.5, while for an ideal one is 1.
 
  * Cross Validation: evaluating the same model on different subsets of a dataset, getting the average prediction, and spread within predictions. This method is applied in the parameter tuning step, which is the process of selecting the best parameter.
 
