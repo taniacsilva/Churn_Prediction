@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import argparse
 import sklearn
 import random
+import pickle
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mutual_info_score
@@ -400,6 +401,25 @@ def cross_validation_function(full_train, categorical, numerical):
 
     return scores
 
+def save_model(dv, model, C=1.0):
+    """ This function saves the model into a pickle file
+        
+        Args:
+            dv (sklearn.feature_extraction._dict_vectorizer.DictVectorizer) : method for one hot encoding
+            model (sklearn.linear_model._logistic.LogisticRegression) : Logistic regression model trained
+            C (float) : regularization parameter
+
+        Return:
+            output_file (string) : contains the name of the file where the model and the DictVectorizer is saved
+    """
+    output_file = f'model_C={C}.bin'
+
+    with open(output_file, 'wb') as f_out:
+        pickle.dump((dv, model), f_out)
+        # using with it is ensured that the file is closed
+    
+    return output_file
+
 
 def parse_arguments():
     """This function parses the argument(s) of this model
@@ -569,6 +589,10 @@ def main():
 
     accuracy = roc_auc_score(set_used[5], y_pred)
     print(accuracy)
+
+    ### Deploy the model
+    output_file = save_model(dv, model)
+    
 
 
 if __name__ == '__main__':
