@@ -40,7 +40,6 @@ def main():
     args = parse_arguments()
     model_file = "model_C=1.0.bin"
     dv, model = load_model(model_file)
-    print(model)
 
 # Try one example
 
@@ -68,7 +67,8 @@ def main():
     
     X = dv.transform([customer])
     
-    model.predict_proba(X)[0, 1]
+    print("input: ", customer)
+    print("churn probability: ", model.predict_proba(X)[0, 1])
 
 if __name__ == '__main__':
     main()

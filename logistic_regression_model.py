@@ -322,7 +322,7 @@ def ROC_Curves (y_pred, set_used):
     return df_scores, success, n
 
 
-def cross_validation_train (x_train, y_train, categorical, numerical, C = 0.1):
+def cross_validation_train (x_train, y_train, categorical, numerical, C):
     """This function trains the model using training set, 
         according to what is done in section 4.7 of the zoomcamp videos
 
@@ -369,7 +369,7 @@ def cross_validation_predict(df, dv, model, categorical, numerical):
     return y_pred
 
 
-def cross_validation_function(full_train, categorical, numerical):
+def cross_validation_function(full_train, categorical, numerical, n_splits):
     """This functions enables to perform cross validation. Evaluating the same model on different subsets
         (k-folds) of a dataset, getting the average prediction, and spread within predictions. 
 
@@ -377,11 +377,12 @@ def cross_validation_function(full_train, categorical, numerical):
             full_train (Pandas.DataFrame) : dataframe that contains a merge between x_full_train and y_full_train that were both inside list set_used
             categorical (list) : list of string that indicates which are the categorical variables
             numerical (list) : list of string that indicates which are the numerical variables
+            n_splits (integer) : number of splits in the training data, k folds
 
         Return:
             scores (list) : list that contains the average auc and standard deviation for each fold
     """
-    n_splits = 5
+    
     for C in tqdm([0.001, 0.01, 0.1, 0.5, 1, 5, 10]):
         scores = []
         kFold = KFold(n_splits=n_splits, shuffle=True, random_state=1)
@@ -401,7 +402,7 @@ def cross_validation_function(full_train, categorical, numerical):
 
     return scores
 
-def save_model(dv, model, C=1.0):
+def save_model(dv, model, C):
     """ This function saves the model into a pickle file
         
         Args:
@@ -426,12 +427,16 @@ def parse_arguments():
 
         Args:
             file_name: name of the command line field to insert on the runtime
+            n_splits: number of splits in the training data, k folds
+            C: regularization parameter
 
         Return:
             args: Stores the extracted data from the parser run
     """
     parser = argparse.ArgumentParser(description="Process all the arguments for this model")
     parser.add_argument("file_name", help="The csv file name")
+    parser.add_argument("n_splits", help="number of splits in the training data, k folds", type=int)
+    parser.add_argument("C", help="regularization parameter", type=float)
     args = parser.parse_args()
 
     return args
@@ -442,20 +447,25 @@ def main():
     args = parse_arguments()
 
     ### Prepare data
+    print("-> Prepare data")
     data, string_col = data_preparation(args.file_name)
 
     ### Setting up the validation framework (split between train, validation and test)
+    print("-> Setting up the validation framework")
     set_used = split_train_val_test(data)
 
     ### Exploratory Data Analysis(EDA)
+    print("-> Exploratory Data Analysis")
     global_churn_rate, numerical, categorical, unique = exploratory_data_analysis(set_used)
     full_train, df_group = feature_importance(set_used, categorical, global_churn_rate)
     df_mt_info_score = mutual_info_churn_score (full_train, categorical)
 
     # Mutual info score sorted
+    print("Mutual info score sorted")
     print(df_mt_info_score.sort_values(by = "mutual_info_score", ascending = False))
 
     # Correlation between numerical variables and churn
+    print("Correlation between numerical variables and churn")
     print(full_train[numerical].corrwith(full_train.churn))
 
     # Correlation analysis between tenure variable and churn
@@ -496,6 +506,7 @@ def main():
     print("Accuracy: ",(set_used[4] == churn_decision).mean())
 
     ### Model Interpretation
+    print('Model Interpretation')
     print(dict(zip(dv.get_feature_names_out(),model.coef_[0].round(3))))
     
     ### Using the model (Full Train and Test Set)
@@ -503,32 +514,34 @@ def main():
     model, churn_decision = logst_regr_model(X_full_train, X_test, set_used[7])
 
     # Returns the accuracy computed using as basis validation dataset
-    print("Accuracy: ",(set_used[5] == churn_decision).mean())
+    print("Accuracy (using as basis validation dataset): ",(set_used[5] == churn_decision).mean())
 
     ### Evaluating the model
+
+    print("-> Evaluating the model")
     y_pred = model.predict_proba(X_val)[:,1]
     confusion_matrix, precision, recall = evaluation_measure (y_pred, set_used[4])
     
     # Confusion matrix
+    print('Confusion matrix')
     print(confusion_matrix)
     print((confusion_matrix/confusion_matrix.sum()).round(2))
 
     # Precision
-    print(precision)
+    print('precision', precision)
 
     # Recall
-    print(recall)
+    print('recall', recall)
 
     ## ROC Curves
+    print('ROC Curves')
     df_scores, success, n = ROC_Curves(y_pred, set_used[4])
     print(df_scores[::10])
 
     # Random Model
     np.random.seed(1)
     y_rand = np.random.uniform (0, 1, size=len(set_used[4]))
-
     df_rand, success_rand, n_rand = ROC_Curves(y_rand, set_used[4])
-    print(df_rand[::10])
 
     # Ideal Model
     num_neg = (set_used[4] == 0).sum()
@@ -536,7 +549,7 @@ def main():
     y_ideal = np.repeat ([0, 1], [num_neg, num_pos])
     y_ideal_pred = np.linspace (0, 1, len(set_used[4]))
     print(1-set_used[4].mean())
-    print(((y_ideal_pred >= 0.726) == y_ideal).mean()) # accuracy
+    print('accuracy', ((y_ideal_pred >= 0.726) == y_ideal).mean()) # accuracy
     df_ideal, success_ideal, n_ideal = ROC_Curves(y_ideal_pred, y_ideal)
     
     plt.plot(df_scores.threshold, df_scores['tpr'], label ='TPR')
@@ -577,23 +590,25 @@ def main():
     print('AUC proxy 10000 records: ', success/n)
     
     # Cross Validation 
-    dv, model = cross_validation_train(set_used[0], set_used[3], categorical, numerical)
+    dv, model = cross_validation_train(set_used[0], set_used[3], categorical, numerical, args.C)
     y_pred = cross_validation_predict(full_train, dv, model, categorical, numerical)
     
-    scores = cross_validation_function(full_train, categorical, numerical)
-    print(type(scores))
-    dv, model = cross_validation_train(set_used[6], set_used[7], categorical, numerical, C=1)
-
+    scores = cross_validation_function(full_train, categorical, numerical, args.n_splits)
+    
+    print("-> Training the model")
+    dv, model = cross_validation_train(set_used[6], set_used[7], categorical, numerical, args.C)
+    
     full_test = pd.DataFrame(pd.merge(set_used[2], set_used[5], left_index=True,right_index=True))
+    
+    print("-> Using the model - Predicting")
     y_pred = cross_validation_predict(full_test, dv, model, categorical, numerical)
 
     accuracy = roc_auc_score(set_used[5], y_pred)
-    print(accuracy)
+    print("Final AUC: ", accuracy)
 
     ### Deploy the model
-    output_file = save_model(dv, model)
-    
-
+    output_file = save_model(dv, model, args.C)
+    print(f"-> The model is saved to {output_file}")
 
 if __name__ == '__main__':
     main()
