@@ -111,6 +111,12 @@ I have followed the steps described:
     * *Saving and loading the model*
         * Saving the model to pickle
         * Loading the model from pickle
+
+    * *Web Services: Serving a churn model with Flask*
+        * Wrapping the predict_lr_model.py script into a Flask app
+        * Querying it with `requests`
+        * Preparing for production: gunicorn
+        * Running it on Windows with waitress
      
 
 

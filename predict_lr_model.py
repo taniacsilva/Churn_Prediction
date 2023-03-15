@@ -2,6 +2,15 @@ import pickle
 import sklearn
 import argparse
 
+from flask import Flask
+from flask import request
+from flask import jsonify
+
+model_file = "model_C=1.0.bin"
+
+app = Flask('churn')
+@app.route('/predict', methods=['POST'])
+
 def load_model(model_file):
     """This function loads the model from .bin file
 
@@ -17,6 +26,25 @@ def load_model(model_file):
     # using with it is ensured that the file is closed
 
     return dv, model
+
+
+def predict(dv, model):
+    """This function
+    """
+
+    print("Getting the data from Marketing")
+    customer = request.get_json()
+
+    print("Using the model")
+    X = dv.transform([customer])
+    y_pred = model.predict_proba(X)[0, 1]
+    churn = y_pred >= 0.5
+
+    result = {
+        "churn_probability" : y_pred,
+        "churn" : churn
+        }
+    return jsonify(result)
 
 
 def parse_arguments():
@@ -38,37 +66,16 @@ def parse_arguments():
 def main():
     """This is the main function of this Linear Model Regression Implementation model"""
     args = parse_arguments()
-    model_file = "model_C=1.0.bin"
+    
+    print("Loading the model")
     dv, model = load_model(model_file)
 
-# Try one example
 
-    customer = {
-    'gender': 'female',
-    'seniorcitizen': 0,
-    'partner': 'yes',
-    'dependents': 'no',
-    'phoneservice': 'no',
-    'multiplelines': 'no_phone_service',
-    'internetservice': 'dsl',
-    'onlinesecurity': 'no',
-    'onlinebackup': 'yes',
-    'deviceprotection': 'no',
-    'techsupport': 'no',
-    'streamingtv': 'no',
-    'streamingmovies': 'no',
-    'contract': 'month-to-month',
-    'paperlessbilling': 'yes',
-    'paymentmethod': 'electronic_check',
-    'tenure': 1,
-    'monthlycharges': 29.85,
-    'totalcharges': 29.85
-    }
+    predict(dv, model)
     
-    X = dv.transform([customer])
+
     
-    print("input: ", customer)
-    print("churn probability: ", model.predict_proba(X)[0, 1])
+   
 
 if __name__ == '__main__':
     main()
