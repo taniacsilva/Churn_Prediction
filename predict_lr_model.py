@@ -27,25 +27,29 @@ def load_model(model_file):
 
     return dv, model
 
-
-def predict(dv, model):
+def customer_info_from_mkt():
     """This function
     """
 
     print("Getting the data from Marketing")
     customer = request.get_json()
 
+    return customer
+
+
+def predict (dv, model, customer):
     print("Using the model")
     X = dv.transform([customer])
     y_pred = model.predict_proba(X)[0, 1]
-    churn = y_pred >= 0.5
 
     result = {
-        "churn_probability" : y_pred,
-        "churn" : churn
+        "churn_probability" : float(y_pred),
+        "churn" : bool(churn)   
         }
-    return jsonify(result)
 
+    churn = y_pred >= 0.5
+
+    return jsonify(result)
 
 def parse_arguments():
     """This function parses the argument(s) of this model
@@ -70,12 +74,9 @@ def main():
     print("Loading the model")
     dv, model = load_model(model_file)
 
-
-    predict(dv, model)
-    
-
-    
-   
+    customer = customer_info_from_mkt()
+    predict(dv, model, customer)
+      
 
 if __name__ == '__main__':
-    main()
+    app.run(debug=True, host='0.0.0.0', port=9696)
