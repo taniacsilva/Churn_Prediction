@@ -8,8 +8,7 @@ from flask import jsonify
 
 model_file = "model_C=1.0.bin"
 
-app = Flask('churn')
-@app.route('/predict', methods=['POST'])
+
 
 def load_model(model_file):
     """This function loads the model from .bin file
@@ -23,6 +22,7 @@ def load_model(model_file):
     """
     with open(model_file, 'rb') as f_in:
         dv, model = pickle.load(f_in)
+
     # using with it is ensured that the file is closed
 
     return dv, model
@@ -36,6 +36,8 @@ def customer_info_from_mkt():
 
     return customer
 
+app = Flask('churn')
+@app.route('/predict', methods=['POST'])
 
 def predict (dv, model, customer):
     print("Using the model")
@@ -50,6 +52,7 @@ def predict (dv, model, customer):
     churn = y_pred >= 0.5
 
     return jsonify(result)
+
 
 def parse_arguments():
     """This function parses the argument(s) of this model
@@ -78,5 +81,5 @@ def main():
     predict(dv, model, customer)
       
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=9696)
