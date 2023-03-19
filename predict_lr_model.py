@@ -9,7 +9,6 @@ from flask import jsonify
 model_file = "model_C=1.0.bin"
 
 
-
 def load_model(model_file):
     """This function loads the model from .bin file
 
