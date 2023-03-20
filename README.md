@@ -117,6 +117,20 @@ I have followed the steps described:
         * Querying it with `requests`
         * Preparing for production: gunicorn
         * Running it on Windows with waitress
+
+    * *Python virtual environment: Pipenv*
+        * Dependency and environment management
+        * Installing Pipenv
+        * Intalling Libraries with Pipenv
+        * Running things with Pipenv
+    
+    * *Environment Management: Docker* 
+        * Why we need Docker
+        * Running a Python image with docker
+        * Dockerfile
+        * Building a docker image
+        * Running a docker image
+        
      
 
 
