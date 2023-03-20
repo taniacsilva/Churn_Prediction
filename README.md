@@ -130,8 +130,11 @@ I have followed the steps described:
         * Dockerfile
         * Building a docker image
         * Running a docker image
-        
-     
+
+    * *Deploying to the cloud: AWS Elastic Beanstalk (optional)*
+        * Installing the eb cli
+        * Running eb locally
+        * Deploying the model     
 
 
 
