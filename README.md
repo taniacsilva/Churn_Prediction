@@ -147,7 +147,7 @@ I have followed the steps described:
         * -p: to map the 9696 port of the Docker to 9696 port of my machine. 
         * --entrypoint=bash: After running Docker, I will now be able to communicate with the container using bash.
 
-    * *Deploying to the cloud: AWS Elastic Beanstalk (optional)*
+    * *Deploying to the cloud: AWS Elastic Beanstalk*
         * Installing the eb cli
         * Running eb locally
         * Deploying the model     
