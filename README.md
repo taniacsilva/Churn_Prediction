@@ -106,7 +106,7 @@ I have followed the steps described:
 
 * ☁ Deploy the model
 
-    **Main Conclusions**: (WIP)
+    **Main Conclusions**:
 
     * *Saving and loading the model*
         * Saving the model to pickle - After training the model and being the model ready for prediction process use this code to save the model for later. It was created a binary file (.bin) and the dict_vectorizer for one hot encoding and model was writed as array in it. 
@@ -146,7 +146,7 @@ I have followed the steps described:
         * --rm: allows us to remove the image from the system.
         * -p: to map the 9696 port of the Docker to 9696 port of my machine. 
         * --entrypoint=bash: After running Docker, I will now be able to communicate with the container using bash.
-        
+
     * *Deploying to the cloud: AWS Elastic Beanstalk (optional)*
         * Installing the eb cli
         * Running eb locally
