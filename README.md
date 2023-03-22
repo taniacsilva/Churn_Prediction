@@ -109,28 +109,44 @@ I have followed the steps described:
     **Main Conclusions**: (WIP)
 
     * *Saving and loading the model*
-        * Saving the model to pickle
-        * Loading the model from pickle
+        * Saving the model to pickle - After training the model and being the model ready for prediction process use this code to save the model for later. It was created a binary file (.bin) and the dict_vectorizer for one hot encoding and model was writed as array in it. 
+        * Loading the model from pickle - To be able to use the model in future without running the code, it is needed to open the binary file we saved before. With unpacking the model and the dict_vectorizer, I was able to again predict for new input values without training a new model by re-running the code.
 
-    * *Web Services: Serving a churn model with Flask*
+    * *Web Services: Serving a churn model with Flask*  - a production server that predict the churn value for new customers
+        
         * Wrapping the predict_lr_model.py script into a Flask app
         * Querying it with `requests`
-        * Preparing for production: gunicorn
-        * Running it on Windows with waitress
+        * Running it on Windows with waitress (waitress-serve --listen=0.0.0.0:9696 churn:app)
 
-    * *Python virtual environment: Pipenv*
-        * Dependency and environment management
-        * Installing Pipenv
-        * Intalling Libraries with Pipenv
-        * Running things with Pipenv
+        A web service is a method used to communicate between electronic devices. There are some methods that can be used:
+        * GET: GET is a method used to retrieve files.~
+        * POST: POST is the second common method used in web services. (e.g. sign up process - Note that there is no specification where the data goes)
+        * PUT: PUT is same as POST but there is specifyed where the data is going to.
+        * DELETE: DELETE is a method that is used to request to delete some data from the server.
+            etc
+
+ 
+     * *Python virtual environment: Pipenv* - I made a virtual environment for the libraries with a required specified version
+     
+        * Dependency and environment management - Sometimes the versions of libraries conflict (the project may not run or get into massive errors). For example, an old project that uses sklearn library with the version of 0.24.1 and now I want to run it using sklearn version 1.0.0. To solve the conflict it is possible to make virtual environments. 
+        * Installing Pipenv - To solve the conflict virtual environments can be created. Virtual environment is something that can seperate the libraries installed in the system and the libraries with specified version I want my project to run with.
+        * Intalling Libraries with Pipenv - After installing pipenv I have installed the libraries (pipenv install numpy sklearn==0.24.1 flask). Note that using the pipenv command I made two files named Pipfile and Pipfile.lock. In Pipfile.lock I can see that each library with it's installed version is named and a hash file is there to reproduce if the environment move to another machine.
+        * Running things with Pipenv - After installing the required libraries the project can be runned in the virtual environment with pipenv shell command
     
     * *Environment Management: Docker* 
-        * Why we need Docker
-        * Running a Python image with docker
-        * Dockerfile
-        * Building a docker image
+        * Why we need Docker - To isolate more my project file from system machine. With Docker I am able to pack all project in a system and run it in any system machine. For example if I want Ubuntu 20.4 I can have it in a mac or windows machine or other operating systems.
+        * Running a Python image with docker - In Docker image file there are settings and dependencies I have in my project. To find Docker images search the [Docker](https://hub.docker.com/search?type=image&q=) website. 
+        * Dockerfile - The flags --deploy and --system makes sure that I install the dependencies directly inside the Docker container without creating an additional virtual environment (which pipenv does by default).ENTRYPOINT -> python shell. 
+        * Building a docker image - After creating the Dockerfile, I need to build it
         * Running a docker image
 
+        *Notes* :
+        * -t: is used for specifying the tag name "churn-prediction".
+        * -it: in order for Docker to allow access to the terminal.
+        * --rm: allows us to remove the image from the system.
+        * -p: to map the 9696 port of the Docker to 9696 port of my machine. 
+        * --entrypoint=bash: After running Docker, I will now be able to communicate with the container using bash.
+        
     * *Deploying to the cloud: AWS Elastic Beanstalk (optional)*
         * Installing the eb cli
         * Running eb locally
