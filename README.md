@@ -119,7 +119,7 @@ I have followed the steps described:
         * Running it on Windows with waitress (waitress-serve --listen=0.0.0.0:9696 churn:app)
 
         A web service is a method used to communicate between electronic devices. There are some methods that can be used:
-        * GET: GET is a method used to retrieve files.~
+        * GET: GET is a method used to retrieve files.
         * POST: POST is the second common method used in web services. (e.g. sign up process - Note that there is no specification where the data goes)
         * PUT: PUT is same as POST but there is specifyed where the data is going to.
         * DELETE: DELETE is a method that is used to request to delete some data from the server.
